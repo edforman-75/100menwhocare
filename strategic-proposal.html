@@ -1536,16 +1536,18 @@
 
             <p>The following questions must be resolved during or after research — they directly affect how the system is built and what privacy commitments can be made to members.</p>
 
-            <div class="highlight-box" style="margin-bottom: 20px;">
-                <strong>Authentication: How do we identify members on the Contribute page?</strong>
-                <p style="margin-top: 10px;">The Contribute page must know who is filling out the "I've Donated" confirmation so it can update the participation tracker and attribute the matching list entry to the right member. Several options exist, each with different tradeoffs:</p>
+            <div class="highlight-box" style="margin-bottom: 20px; border-left-color: #2D8B4E;">
+                <strong style="color: #2D8B4E;">Decision: User Accounts Are Required for Authentication</strong>
+                <p style="margin-top: 10px;">The system will require user accounts. Members will create an account (name, email, password) when they join, which enables:</p>
                 <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
-                    <li><strong>No authentication (current state):</strong> The "I've Donated" form asks the member to type their name. Self-reported. No verification. Easy, but error-prone and cannot enforce good-standing tracking.</li>
-                    <li><strong>Unique per-member link:</strong> The post-meeting email contains a personalized link (e.g., ?member=abc123) that auto-fills the member's identity on the Contribute page. Zero friction for the member. Requires the coordinator's email system to generate unique links. Does not require passwords.</li>
-                    <li><strong>Email magic link:</strong> Member enters their email address, receives a one-time login link. More secure than a shared URL. Still no password. Standard for low-stakes applications.</li>
-                    <li><strong>Username + password:</strong> Full account system. Most secure. Most friction. Likely overkill for a volunteer giving circle.</li>
+                    <li>Secure, persistent payment profile (DAF sponsor, IRA custodian, Zelle info) — set once, used every quarter</li>
+                    <li>Accurate, verifiable participation tracking — "I've Donated" confirmations are tied to authenticated identities, not self-typed names</li>
+                    <li>Good-standing enforcement — the system can determine eligibility to nominate based on confirmed contribution history</li>
+                    <li>Role-based access — members see the Contribute page; the coordinator sees the participation tracker dashboard; both use the same underlying account system</li>
+                    <li>Matching list generation — DAF/QCD confirmations are automatically attributed to the correct member and include their contact email for charity acknowledgment</li>
                 </ul>
-                <p style="margin-top: 10px;"><strong>Recommendation for research:</strong> Validate whether unique per-member links in the post-meeting email meet member and coordinator needs before considering a full account system.</p>
+                <p style="margin-top: 12px;"><strong>Implementation note:</strong> A research plan document should be created separately to define the full account system requirements, validate friction tolerance with members, and determine whether to build custom or use an existing platform (e.g., a lightweight member portal on Squarespace, a no-code tool like Glide or Softr, or a purpose-built web application).</p>
+                <p style="margin-top: 10px; font-size: 0.9em; color: #555;"><em>Prior options considered: unique per-member email links, magic links, and self-reported names. These were set aside in favor of persistent accounts, which are required to support the payment profile, good-standing tracking, and coordinator dashboard as a unified system.</em></p>
             </div>
 
             <div class="highlight-box" style="margin-bottom: 20px;">
@@ -1558,8 +1560,8 @@
                     <li>Matching list: members who used DAF or QCD, with their preferred contact email, ready to export and send to each presenting charity</li>
                     <li>Participation trends across quarters (participation rate, method breakdown, good-standing status)</li>
                 </ul>
-                <p style="margin-top: 10px;">This data is sensitive and must not be publicly accessible. The coordinator dashboard must be behind at minimum a simple shared password, and ideally a role-based login distinct from the member-facing Contribute page.</p>
-                <p style="margin-top: 10px;"><strong>Open question:</strong> Should the coordinator dashboard be a lightweight web tool (e.g., Airtable, Notion, or a simple password-protected admin page), or should it be built as part of the same system as the Contribute page?</p>
+                <p style="margin-top: 10px;">This data is sensitive and must not be publicly accessible. The coordinator dashboard uses role-based access within the same account system as the member-facing Contribute page — coordinators log in with the same credentials but see a different view.</p>
+                <p style="margin-top: 10px;"><strong>Platform decision deferred to research:</strong> Whether this is built as a lightweight no-code tool (Glide, Softr, Airtable) or a purpose-built web application depends on scale, budget, and technical resources available — to be determined in the research plan.</p>
             </div>
 
             <div class="highlight-box">
