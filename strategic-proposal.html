@@ -737,6 +737,24 @@
                             <strong>Current barrier:</strong> Process is mostly tribal knowledge. Each quarter requires reinventing workflows.
                         </div>
                     </div>
+
+                    <div class="job-item">
+                        <p class="job-when"><strong>When:</strong> Tracking participation after each quarterly meeting</p>
+                        <p class="job-want"><strong>I want to:</strong> Know which members have confirmed their contribution, to which charities, and by what payment method</p>
+                        <p class="job-so"><strong>So I can:</strong> Generate an accurate matching list for the charities, send reminders only to non-responders, and analyze participation patterns over time</p>
+                        <div class="current-barrier">
+                            <strong>Current barrier:</strong> No tracking system. Rely on member self-reporting via email or check delivery. Cannot confirm whether a DAF grant or Zelle transfer actually went to the right charity. Participation rate is estimated, not measured. Matching list is manually assembled.
+                        </div>
+                    </div>
+
+                    <div class="job-item">
+                        <p class="job-when"><strong>When:</strong> Accessing the participation tracker and member data</p>
+                        <p class="job-want"><strong>I want to:</strong> Have a private, password-protected coordinator dashboard</p>
+                        <p class="job-so"><strong>So I can:</strong> View who has and has not donated, export the matching list, and analyze giving patterns — without exposing individual member data to the general public</p>
+                        <div class="current-barrier">
+                            <strong>Current barrier:</strong> No system exists. All tracking is done via spreadsheet and email. No authentication mechanism. Member contribution data is sensitive and must not be publicly accessible.
+                        </div>
+                    </div>
                 </div>
 
                 <h4 style="margin-top: 30px;">Research Questions for Marty:</h4>
@@ -746,6 +764,7 @@
                     <li>How do you currently track who has donated and how much? What data do you wish you had?</li>
                     <li>If you could wave a magic wand and simplify one part of this, what would it be?</li>
                     <li>How would you feel about electronic payments (Zelle, ACH, etc.) instead of physical checks?</li>
+                    <li>What level of participation reporting would be useful — per-member, per-charity, per-quarter trends?</li>
                 </ul>
             </div>
 
@@ -1510,6 +1529,50 @@
                     <p class="validation-method">Validation: Interview leadership about data needs. Pilot and measure adoption of "I've Donated" form.</p>
                 </li>
             </ol>
+        </section>
+
+        <section>
+            <h2>Open Design Questions</h2>
+
+            <p>The following questions must be resolved during or after research — they directly affect how the system is built and what privacy commitments can be made to members.</p>
+
+            <div class="highlight-box" style="margin-bottom: 20px;">
+                <strong>Authentication: How do we identify members on the Contribute page?</strong>
+                <p style="margin-top: 10px;">The Contribute page must know who is filling out the "I've Donated" confirmation so it can update the participation tracker and attribute the matching list entry to the right member. Several options exist, each with different tradeoffs:</p>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>No authentication (current state):</strong> The "I've Donated" form asks the member to type their name. Self-reported. No verification. Easy, but error-prone and cannot enforce good-standing tracking.</li>
+                    <li><strong>Unique per-member link:</strong> The post-meeting email contains a personalized link (e.g., ?member=abc123) that auto-fills the member's identity on the Contribute page. Zero friction for the member. Requires the coordinator's email system to generate unique links. Does not require passwords.</li>
+                    <li><strong>Email magic link:</strong> Member enters their email address, receives a one-time login link. More secure than a shared URL. Still no password. Standard for low-stakes applications.</li>
+                    <li><strong>Username + password:</strong> Full account system. Most secure. Most friction. Likely overkill for a volunteer giving circle.</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>Recommendation for research:</strong> Validate whether unique per-member links in the post-meeting email meet member and coordinator needs before considering a full account system.</p>
+            </div>
+
+            <div class="highlight-box" style="margin-bottom: 20px;">
+                <strong>Coordinator Dashboard: Password-Protected Participation Tracker</strong>
+                <p style="margin-top: 10px;">The coordinator needs a private view that general members should not have access to. This view must show:</p>
+                <ul style="margin-top: 10px; padding-left: 20px; line-height: 1.8;">
+                    <li>Which members have confirmed their contribution this quarter</li>
+                    <li>Which members have not yet responded (for targeted two-week reminders)</li>
+                    <li>Per-member: charity allocations and payment method used</li>
+                    <li>Matching list: members who used DAF or QCD, with their preferred contact email, ready to export and send to each presenting charity</li>
+                    <li>Participation trends across quarters (participation rate, method breakdown, good-standing status)</li>
+                </ul>
+                <p style="margin-top: 10px;">This data is sensitive and must not be publicly accessible. The coordinator dashboard must be behind at minimum a simple shared password, and ideally a role-based login distinct from the member-facing Contribute page.</p>
+                <p style="margin-top: 10px;"><strong>Open question:</strong> Should the coordinator dashboard be a lightweight web tool (e.g., Airtable, Notion, or a simple password-protected admin page), or should it be built as part of the same system as the Contribute page?</p>
+            </div>
+
+            <div class="highlight-box">
+                <strong>How We Know Who Has Donated and Where</strong>
+                <p style="margin-top: 10px;">The system can only know about contributions that members self-report via the "I've Donated" confirmation form. It cannot directly verify payments made via Zelle, ACH, DAF, QCD, or check — those transactions happen outside the system and go directly to the charity.</p>
+                <p style="margin-top: 10px;">This is acceptable because:</p>
+                <ul style="margin-top: 8px; padding-left: 20px; line-height: 1.8;">
+                    <li>100MWC is not a financial intermediary. It facilitates but does not handle the funds.</li>
+                    <li>The existing Founding Agreement does not require verified payment confirmation — only that members contribute to qualifying charities.</li>
+                    <li>Self-reporting via "I've Donated" provides sufficient data for matching list generation, good-standing tracking, and impact reporting.</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>What the system tracks:</strong> "Member Jane Smith says she granted $100 to Hunger Coalition via Fidelity Charitable." The charity then receives a Fidelity EFT and confirms receipt. This is enough to close the loop.</p>
+            </div>
         </section>
 
         <section>

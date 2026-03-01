@@ -280,7 +280,7 @@ body {
 /* Phone UI atoms */
 .ph-header { background:#1B3A5C; color:white; padding:10px 12px; font-size:11px; font-weight:700; text-align:center; }
 .ph-subhead { font-size:9px; color:#888; text-align:center; margin-bottom:8px; padding-top:6px; }
-.ph-body { padding:10px 12px; }
+.ph-body { padding:10px 12px; color:#333; }
 .ph-charity-card { border:1px solid #ddd; border-radius:6px; padding:8px 10px; margin-bottom:8px; }
 .ph-charity-name { font-size:10px; font-weight:700; color:#1B3A5C; margin-bottom:2px; }
 .ph-charity-desc { font-size:8px; color:#666; margin-bottom:6px; line-height:1.3; }
@@ -461,6 +461,7 @@ const SITE_HTML = `
     <a href="#">Membership</a>
     <a href="#">Meetings</a>
     <a href="#">Who We've Helped</a>
+    <a href="member-guide.html" target="_blank" style="color:#2D8B4E;font-weight:700;">Member Guide</a>
     <a href="#">Contact</a>
   </div>
   <button class="site-contribute-btn" id="site-nav-btn" onclick="goContribute()">Contribute &#8594;</button>
@@ -513,18 +514,66 @@ const CONTRIBUTE_HTML = `
 const PAYMENT_HTML = `
 <div class="ph-header">How Would You Like to Give?</div>
 <div class="ph-body">
-  <div class="ph-subhead" style="text-align:left;padding:0 0 6px;">The Hunger Coalition &nbsp;&middot;&nbsp; $100</div>
-  <div class="ph-section">Fee-free &mdash; 100&cent; to the cause</div>
-  <div class="ph-option"><div class="ph-radio on"></div><div style="font-size:9px;font-weight:600;">Donor Advised Fund (DAF)</div><span class="ph-badge ph-badge-free">FREE</span></div>
-  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">Zelle</div><span class="ph-badge ph-badge-free">FREE</span></div>
-  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">ACH / Bank Transfer</div><span class="ph-badge ph-badge-free">FREE</span></div>
-  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">IRA / QCD (age 70&frac12;+)</div><span class="ph-badge ph-badge-free">FREE</span></div>
-  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">Check</div><span class="ph-badge ph-badge-free">FREE</span></div>
-  <div class="ph-divider"></div>
-  <div class="ph-section" style="color:#E8734A;">Convenient &mdash; small processing fee</div>
-  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">Online / Credit Card</div><span class="ph-badge ph-badge-fee">2&ndash;3%</span></div>
-  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">Venmo</div><span class="ph-badge ph-badge-fee">~2%</span></div>
-  <div class="ph-btn ph-btn-green" onclick="goScene('daf')">Continue with DAF &#8594;</div>
+  <div style="font-size:9px;color:#555;margin-bottom:8px;">The Hunger Coalition &middot; $100</div>
+  <div style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#2D8B4E;padding-bottom:4px;border-bottom:2px solid #c8e6c9;margin-bottom:6px;">Fee-Free &mdash; 100&cent; to the cause</div>
+  <div style="background:#e8f5e9;border:1.5px solid #2D8B4E;border-radius:5px;padding:6px 8px;margin-bottom:4px;display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="goScene('daf')">
+    <div class="ph-radio on"></div>
+    <div style="flex:1;">
+      <div style="font-size:9px;font-weight:700;color:#1B3A5C;">Donor Advised Fund (DAF)</div>
+      <div style="font-size:7px;color:#666;margin-top:1px;">Fidelity, Schwab, Vanguard, Community Fdtn.</div>
+    </div>
+    <span class="ph-badge ph-badge-free">FREE</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-bottom:1px solid #f0f0f0;">
+    <div class="ph-radio"></div>
+    <div style="flex:1;">
+      <div style="font-size:9px;font-weight:600;color:#333;">Zelle</div>
+      <div style="font-size:7px;color:#888;">Direct bank-to-bank transfer</div>
+    </div>
+    <span class="ph-badge ph-badge-free">FREE</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-bottom:1px solid #f0f0f0;">
+    <div class="ph-radio"></div>
+    <div style="flex:1;">
+      <div style="font-size:9px;font-weight:600;color:#333;">ACH / Bank Transfer</div>
+      <div style="font-size:7px;color:#888;">Via your bank&rsquo;s bill pay</div>
+    </div>
+    <span class="ph-badge ph-badge-free">FREE</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-bottom:1px solid #f0f0f0;">
+    <div class="ph-radio"></div>
+    <div style="flex:1;">
+      <div style="font-size:9px;font-weight:600;color:#333;">IRA / QCD</div>
+      <div style="font-size:7px;color:#888;">Age 70&frac12;+ &mdash; tax-free from your IRA</div>
+    </div>
+    <span class="ph-badge ph-badge-free">FREE</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;margin-bottom:8px;">
+    <div class="ph-radio"></div>
+    <div style="flex:1;">
+      <div style="font-size:9px;font-weight:600;color:#333;">Check</div>
+      <div style="font-size:7px;color:#888;">Mail to Marty &mdash; he hand-delivers</div>
+    </div>
+    <span class="ph-badge ph-badge-free">FREE</span>
+  </div>
+  <div style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#E8734A;padding-bottom:4px;border-bottom:2px solid #ffe0cc;margin-bottom:6px;">With Processing Fee</div>
+  <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;border-bottom:1px solid #f0f0f0;">
+    <div class="ph-radio"></div>
+    <div style="flex:1;">
+      <div style="font-size:9px;font-weight:600;color:#333;">Online / Credit Card</div>
+      <div style="font-size:7px;color:#888;">Through charity&rsquo;s website</div>
+    </div>
+    <span class="ph-badge ph-badge-fee">2&ndash;3%</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;margin-bottom:8px;">
+    <div class="ph-radio"></div>
+    <div style="flex:1;">
+      <div style="font-size:9px;font-weight:600;color:#333;">Venmo</div>
+      <div style="font-size:7px;color:#888;">To charity&rsquo;s verified Venmo profile</div>
+    </div>
+    <span class="ph-badge ph-badge-fee">~2%</span>
+  </div>
+  <div class="ph-btn ph-btn-green" onclick="goScene('daf')">Continue with DAF &rarr;</div>
 </div>
 `;
 
@@ -566,6 +615,76 @@ const CONFIRM_HTML = `
 </div>
 `;
 
+const PROFILE_INVITE_HTML = `
+<div class="email-inbox">
+  <div class="email-header-bar"><span>Inbox</span><span>12 messages</span></div>
+  <div class="inbox-row unread" onclick="goScene('profile-setup')">
+    <div class="inbox-dot"></div>
+    <div class="inbox-from">100 Men Who Care WRV</div>
+    <div class="inbox-subj unread">Action needed: set up your payment profile (2 min)</div>
+    <div class="inbox-prev">Welcome, James! Before your first quarterly contribution, let us know how you prefer to give...</div>
+    <div class="inbox-time">Today</div>
+  </div>
+  <div class="inbox-row">
+    <div class="inbox-from">Marty Lyon</div>
+    <div class="inbox-subj">Welcome to 100 Men Who Care Wood River Valley</div>
+    <div class="inbox-prev">We&rsquo;re thrilled to have you join our community of givers...</div>
+    <div class="inbox-time">Mon</div>
+  </div>
+  <div class="inbox-row">
+    <div class="inbox-from">100 Men Who Care WRV</div>
+    <div class="inbox-subj">Q2 2026 Meeting &mdash; April 15 &middot; Town Center West</div>
+    <div class="inbox-prev">Three organizations will present this quarter: The Hunger Coalition, Sun Valley Humane...</div>
+    <div class="inbox-time">Mon</div>
+  </div>
+</div>
+`;
+
+const PROFILE_SETUP_HTML = `
+<div class="ph-header">Payment Profile Setup</div>
+<div class="ph-body">
+  <div style="font-size:8px;color:#555;margin-bottom:10px;line-height:1.5;">One-time setup. We&rsquo;ll pre-fill the Contribute page with your preferences each quarter &mdash; no repeating yourself.</div>
+  <div style="font-size:7px;font-weight:700;color:#1B3A5C;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Preferred payment method</div>
+  <div style="background:#e8f5e9;border:1.5px solid #2D8B4E;border-radius:4px;padding:6px 8px;margin-bottom:3px;display:flex;align-items:center;gap:6px;">
+    <div class="ph-radio on"></div><div style="font-size:9px;font-weight:700;color:#1B3A5C;">Donor Advised Fund (DAF)</div>
+  </div>
+  <div style="border:1px solid #ddd;border-radius:4px;padding:5px 8px;margin-bottom:3px;display:flex;align-items:center;gap:6px;">
+    <div class="ph-radio"></div><div style="font-size:9px;color:#555;">Zelle</div>
+  </div>
+  <div style="border:1px solid #ddd;border-radius:4px;padding:5px 8px;margin-bottom:3px;display:flex;align-items:center;gap:6px;">
+    <div class="ph-radio"></div><div style="font-size:9px;color:#555;">ACH / Bank Transfer</div>
+  </div>
+  <div style="border:1px solid #ddd;border-radius:4px;padding:5px 8px;margin-bottom:3px;display:flex;align-items:center;gap:6px;">
+    <div class="ph-radio"></div><div style="font-size:9px;color:#555;">IRA / QCD (age 70&frac12;+)</div>
+  </div>
+  <div style="border:1px solid #ddd;border-radius:4px;padding:5px 8px;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+    <div class="ph-radio"></div><div style="font-size:9px;color:#555;">Check</div>
+  </div>
+  <div style="font-size:7px;font-weight:700;color:#1B3A5C;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Your DAF sponsor</div>
+  <div style="background:#e8f5e9;border:1.5px solid #2D8B4E;border-radius:4px;padding:6px 8px;margin-bottom:3px;font-size:9px;font-weight:700;color:#1B3A5C;">Fidelity Charitable</div>
+  <div style="border:1px solid #ddd;border-radius:4px;padding:5px 8px;margin-bottom:3px;font-size:9px;color:#555;">Schwab Charitable</div>
+  <div style="border:1px solid #ddd;border-radius:4px;padding:5px 8px;margin-bottom:8px;font-size:9px;color:#555;">Vanguard / Other &rarr;</div>
+  <div style="font-size:7px;color:#888;margin-bottom:8px;line-height:1.4;">Your sponsor is used to pre-fill grant forms &mdash; you still approve each grant in Fidelity Charitable&rsquo;s portal.</div>
+  <div class="ph-btn ph-btn-green" onclick="goScene('profile-done')">Save Profile &rarr;</div>
+</div>
+`;
+
+const PROFILE_DONE_HTML = `
+<div class="ph-header">Profile Saved</div>
+<div class="ph-body">
+  <div class="ph-success-icon">&#10003;</div>
+  <div style="text-align:center;font-size:12px;font-weight:700;color:#1B3A5C;margin-bottom:4px;">You&rsquo;re set up</div>
+  <div style="text-align:center;font-size:8px;color:#555;margin-bottom:12px;line-height:1.5;">Each quarter, the Contribute page will pre-select DAF and pre-fill the Fidelity Charitable grant form with the charity&rsquo;s name and EIN.</div>
+  <div style="background:#f0f6fa;border-radius:6px;padding:8px 10px;font-size:8px;margin-bottom:10px;line-height:1.6;">
+    <div style="font-weight:700;color:#1B3A5C;margin-bottom:4px;">Your profile:</div>
+    <div style="color:#333;">Method: <strong style="color:#2D8B4E;">Donor Advised Fund</strong></div>
+    <div style="color:#333;">Sponsor: <strong style="color:#1B3A5C;">Fidelity Charitable</strong></div>
+  </div>
+  <div class="ph-btn ph-btn-green" onclick="goScene('contribute')">Go to Q2 2026 Contribute Page &rarr;</div>
+  <div style="font-size:7px;color:#888;text-align:center;margin-top:6px;">Update anytime from your account settings</div>
+</div>
+`;
+
 const scenes = {
 
   lobby: {
@@ -579,6 +698,46 @@ const scenes = {
     },
     device: 'lobby',
     next: null,
+  },
+
+  // ── Setup path ─────────────────────────────────
+  'setup-invite': {
+    title: 'Welcome Email: Set Up Your Profile', pathTag: 'New Member Setup', pathClass: 'email',
+    step: 1, pathLen: 6,
+    annotation: 'Every new member receives a <strong>one-time profile setup email</strong> before their first contribution quarter. This is where the system learns their payment preferences.',
+    roles: {
+      member:      ['Just joined 100MWC', 'Gets welcome email + setup link', '"Two minutes" &mdash; I can do that now'],
+      coord:       ['New member flagged in system', 'Setup email auto-sent on join', 'No action needed until they complete profile'],
+      beneficiary: ['Not yet involved', 'More complete member profiles = better donation matching', 'Will eventually receive a more seamless gift stream'],
+    },
+    device: 'setup-invite',
+    next: 'profile-setup',
+  },
+
+  'profile-setup': {
+    title: 'Payment Profile: Choose Your Method', pathTag: 'New Member Setup', pathClass: 'email',
+    step: 2, pathLen: 6,
+    annotation: '<strong>One time, never again.</strong> The member selects their preferred payment method and &mdash; for DAF &mdash; their sponsor. This choice pre-fills the Contribute page every quarter.',
+    roles: {
+      member:      ['Selects: Donor Advised Fund', 'Picks: Fidelity Charitable', '"Done. That was 45 seconds."'],
+      coord:       ['Profile stored: James Lee &rarr; DAF &rarr; Fidelity', 'Contribute page will pre-select DAF for James', 'Matching list will auto-populate for James&rsquo;s grants'],
+      beneficiary: ['No direct interaction yet', 'But when James grants, his name will be on the matching list', 'Personalized acknowledgment becomes possible'],
+    },
+    device: 'phone-profile-setup',
+    next: 'profile-done',
+  },
+
+  'profile-done': {
+    title: 'Profile Saved &mdash; Ready to Contribute', pathTag: 'New Member Setup', pathClass: 'email',
+    step: 3, pathLen: 6,
+    annotation: 'Profile confirmed. The system now knows James&rsquo;s DAF sponsor. The next time he lands on the Contribute page, DAF is pre-selected and the Fidelity grant form is pre-filled.',
+    roles: {
+      member:      ['Profile done &mdash; continues to Contribute page', 'Q2 charities are live', '"Fidelity is pre-loaded. Three taps and I&rsquo;m done."'],
+      coord:       ['James&rsquo;s profile: complete', 'He&rsquo;ll show on the participation tracker when he confirms', 'Two-week reminder will only go to non-responders'],
+      beneficiary: ['Still not yet involved', 'But James&rsquo;s grant is coming soon', 'Will receive it as "Fidelity Charitable" &mdash; matched via the list'],
+    },
+    device: 'phone-profile-done',
+    next: 'contribute',
   },
 
   // ── Website path ───────────────────────────────
@@ -727,6 +886,7 @@ const paths = {
   web:     ['lobby', 'web-before', 'web-inject', 'contribute', 'payment', 'daf', 'confirm'],
   meeting: ['lobby', 'meeting-room', 'meeting-scan', 'contribute', 'payment', 'daf', 'confirm'],
   email:   ['lobby', 'email-inbox', 'email-open', 'contribute', 'payment', 'daf', 'confirm'],
+  setup:   ['lobby', 'setup-invite', 'profile-setup', 'profile-done', 'contribute', 'payment', 'daf', 'confirm'],
 };
 
 let currentPath = 'web';
@@ -763,6 +923,14 @@ function renderLobby() {
         <h3>Post-Meeting Email</h3>
         <p>A member who couldn&rsquo;t attend receives the results email and gives directly from their phone.</p>
         <span class="entry-badge badge-email">Email Path</span>
+      </div>
+    </div>
+    <div class="entry-grid" style="grid-template-columns:1fr;max-width:340px;margin:0 auto 20px;">
+      <div class="entry-card" onclick="startPath('setup')" style="border-color:#2E86AB;background:#0f2540;">
+        <div class="entry-icon">&#9881;</div>
+        <h3>New Member: Payment Profile Setup</h3>
+        <p>A new member receives the profile setup email, picks their preferred payment method (DAF), and flows directly into the Contribute page — pre-filled.</p>
+        <span class="entry-badge" style="background:#1B3A5C;color:#88c4e8;">Setup Path</span>
       </div>
     </div>
     <div class="lobby-roles">
@@ -940,6 +1108,15 @@ function renderPhone(html) {
   </div>`;
 }
 
+function renderEmailFrame(html) {
+  return `
+  <div class="email-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-status"><span>9:41</span><span>100%</span></div>
+    ${html}
+  </div>`;
+}
+
 /* ═══════════════════════════════════════════════════
    Render engine
    ═══════════════════════════════════════════════════ */
@@ -956,7 +1133,10 @@ function renderDevice(scene) {
     case 'phone-contribute':return renderPhone(CONTRIBUTE_HTML);
     case 'phone-payment':   return renderPhone(PAYMENT_HTML);
     case 'phone-daf':       return renderPhone(DAF_HTML);
-    case 'phone-confirm':   return renderPhone(CONFIRM_HTML);
+    case 'phone-confirm':        return renderPhone(CONFIRM_HTML);
+    case 'setup-invite':         return renderEmailFrame(PROFILE_INVITE_HTML);
+    case 'phone-profile-setup':  return renderPhone(PROFILE_SETUP_HTML);
+    case 'phone-profile-done':   return renderPhone(PROFILE_DONE_HTML);
     default:                return '<p style="color:#4a7a9b">Scene not found</p>';
   }
 }
