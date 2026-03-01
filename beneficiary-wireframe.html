@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beneficiary (Recipient Charity) Workflow — Wireframe</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            color: #222;
+        }
+
+        .page-header {
+            background: #4A1E6B;
+            color: white;
+            padding: 28px 48px;
+        }
+        .page-header h1 { font-size: 20px; font-weight: 700; }
+        .page-header p  { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+        .page-header .nav { margin-top: 10px; font-size: 11px; opacity: 0.8; }
+        .page-header .nav a { color: #c89be8; text-decoration: none; margin-right: 16px; }
+
+        .timeline-bar {
+            display: flex;
+            background: #5d2787;
+            overflow-x: auto;
+        }
+        .timeline-phase {
+            padding: 8px 20px;
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            color: rgba(255,255,255,0.55);
+            white-space: nowrap;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .timeline-phase.active { color: white; background: rgba(255,255,255,0.15); }
+
+        .phase-divider {
+            background: #f0e8f8;
+            padding: 10px 48px;
+            font-size: 11px; font-weight: 700;
+            color: #4A1E6B;
+            letter-spacing: 0.5px;
+            border-top: 2px solid #c9a3e8;
+            border-bottom: 2px solid #c9a3e8;
+        }
+
+        .flow-section { padding: 28px 48px 0; }
+        .flow-section h2 {
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            color: #666; margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #d0d5dd;
+        }
+        .flow-section h2 span {
+            background: #4A1E6B; color: white;
+            padding: 2px 8px; border-radius: 3px;
+            margin-right: 8px; font-size: 9px;
+        }
+
+        .storyboard-row {
+            display: flex; gap: 16px;
+            align-items: flex-start; flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+
+        .arrow {
+            display: flex; align-items: center;
+            padding-top: 80px; color: #aaa;
+            font-size: 22px; flex-shrink: 0;
+        }
+
+        .screen-card { width: 210px; flex-shrink: 0; }
+        .screen-card.wide { width: 260px; }
+
+        .laptop {
+            background: white;
+            border: 2px solid #4A1E6B;
+            border-radius: 8px; overflow: hidden;
+        }
+        .laptop-bar {
+            background: #4A1E6B; padding: 5px 10px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .laptop-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+        .laptop-url {
+            flex: 1; background: rgba(255,255,255,0.15);
+            border-radius: 3px; height: 14px;
+            font-size: 8px; color: rgba(255,255,255,0.7);
+            display: flex; align-items: center; padding: 0 6px;
+        }
+        .laptop-label {
+            background: #4A1E6B; color: white;
+            font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.6px;
+            padding: 3px 8px;
+        }
+        .laptop-label.trigger { background: #6c757d; }
+        .laptop-label.action  { background: #2E86AB; }
+        .laptop-label.success { background: #2D8B4E; }
+        .laptop-content { padding: 10px; min-height: 220px; }
+        .laptop-content.tall { min-height: 280px; }
+        .laptop-content.short { min-height: 150px; }
+
+        .phone {
+            background: white; border: 2.5px solid #4A1E6B;
+            border-radius: 16px; overflow: hidden;
+        }
+        .phone-notch { height: 8px; background: #4A1E6B; display: flex; align-items: center; justify-content: center; }
+        .phone-notch::after { content: ''; width: 36px; height: 4px; background: #7b40a8; border-radius: 2px; }
+        .phone-status { font-size: 9px; color: #888; padding: 3px 8px; background: #f5f5f5; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        .phone-label { background: #4A1E6B; color: white; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; padding: 3px 8px; }
+        .phone-label.action { background: #2E86AB; }
+        .phone-content { padding: 10px; min-height: 200px; }
+
+        .card-caption { margin-top: 8px; font-size: 11px; color: #555; line-height: 1.4; text-align: center; }
+        .card-num { display: inline-block; background: #4A1E6B; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; font-weight: 700; line-height: 18px; text-align: center; margin-right: 4px; }
+        .annotation { margin-top: 8px; background: #fffde7; border-left: 3px solid #f9c740; padding: 6px 8px; font-size: 10px; color: #555; line-height: 1.4; border-radius: 0 3px 3px 0; }
+
+        /* atoms */
+        .wf-header { background: #4A1E6B; color: white; font-size: 10px; font-weight: 700; padding: 6px 8px; text-align: center; margin: -10px -10px 8px -10px; }
+        .wf-subhead { font-size: 9px; color: #888; text-align: center; margin-bottom: 8px; }
+        .wf-section-head { font-size: 9px; font-weight: 700; color: #4A1E6B; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .wf-body { font-size: 9px; color: #444; line-height: 1.4; margin-bottom: 6px; }
+        .wf-label { font-size: 9px; font-weight: 700; color: #333; margin-bottom: 2px; }
+        .wf-field { border: 1px solid #ccc; border-radius: 3px; height: 20px; background: #fafafa; margin-bottom: 5px; padding: 0 6px; display: flex; align-items: center; font-size: 9px; color: #bbb; }
+        .wf-field.filled { color: #333; background: white; }
+        .wf-btn { background: #4A1E6B; color: white; border-radius: 4px; padding: 5px 10px; font-size: 9px; font-weight: 700; text-align: center; margin-top: 5px; }
+        .wf-btn.blue   { background: #2E86AB; }
+        .wf-btn.green  { background: #2D8B4E; }
+        .wf-btn.orange { background: #E8734A; }
+        .wf-btn.ghost  { background: white; color: #4A1E6B; border: 1px solid #4A1E6B; }
+        .wf-divider { border: none; border-top: 1px solid #eee; margin: 7px 0; }
+        .wf-badge { display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
+        .badge-new  { background: #e3f2fd; color: #1565c0; }
+        .badge-done { background: #e8f5e9; color: #2D8B4E; }
+        .badge-warn { background: #fff3e0; color: #E8734A; }
+
+        .wf-step { display: flex; align-items: flex-start; gap: 5px; margin-bottom: 5px; }
+        .wf-step-num { width: 14px; height: 14px; background: #4A1E6B; color: white; border-radius: 50%; font-size: 8px; font-weight: 700; line-height: 14px; text-align: center; flex-shrink: 0; }
+        .wf-step-text { font-size: 9px; color: #444; line-height: 1.3; }
+
+        .wf-table { width: 100%; border-collapse: collapse; font-size: 8px; margin-bottom: 6px; }
+        .wf-table th { background: #4A1E6B; color: white; padding: 3px 5px; text-align: left; }
+        .wf-table td { padding: 3px 5px; border-bottom: 1px solid #f0f0f0; }
+        .wf-table tr:nth-child(even) td { background: #f9f9f9; }
+
+        .stat-row { display: flex; justify-content: space-around; margin: 8px 0; }
+        .stat-box { text-align: center; }
+        .stat-num { font-size: 18px; font-weight: 700; color: #4A1E6B; }
+        .stat-label { font-size: 8px; color: #888; }
+
+        .gift-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #f0f0f0; font-size: 9px; gap: 4px; }
+        .gift-name { font-weight: 600; }
+        .gift-method { color: #888; font-size: 8px; }
+        .gift-amount { font-weight: 700; color: #2D5016; }
+
+        .summary-grid { display: grid; grid-template-columns: 120px 1fr; gap: 8px 16px; font-size: 11px; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); max-width: 760px; margin-bottom: 40px; }
+        .summary-phase { font-weight: 700; color: #4A1E6B; font-size: 10px; text-transform: uppercase; letter-spacing: .4px; }
+        .summary-desc { color: #444; line-height: 1.5; }
+
+        .emotion-bar { display: flex; gap: 4px; margin: 6px 0; align-items: center; font-size: 9px; color: #666; }
+        .emotion-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .emotion-excited { background: #2D8B4E; }
+        .emotion-overwhelmed { background: #E8734A; }
+        .emotion-satisfied { background: #2E86AB; }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>100 Men Who Care — Beneficiary (Recipient Charity) Workflow</h1>
+    <p>Storyboard covering the presenting organization experience · Feb 2026 draft</p>
+    <div class="nav">
+        <a href="donate-wireframe.html">Member Donate Flow</a>
+        <a href="coordinator-wireframe.html">Coordinator Flow</a>
+        <a href="member-journey.html">Member Journey Map</a>
+    </div>
+</div>
+
+<div class="timeline-bar">
+    <div class="timeline-phase active">1. You're Selected (3 wks out)</div>
+    <div class="timeline-phase">2. Setup Form</div>
+    <div class="timeline-phase">3. Pre-Meeting Prep</div>
+    <div class="timeline-phase">4. Presentation Day</div>
+    <div class="timeline-phase">5. Gifts Arrive</div>
+    <div class="timeline-phase">6. Matching List</div>
+    <div class="timeline-phase">7. Acknowledgments</div>
+    <div class="timeline-phase">8. Relationship</div>
+</div>
+
+
+<!-- ═══════════════ PHASE 1: SELECTION NOTIFICATION ════════════════ -->
+<div class="phase-divider">Phase 1 — You're a Finalist! (3 weeks before meeting)</div>
+
+<div class="flow-section" style="padding-top: 24px;">
+    <h2><span>B-1</span>Selection Notification Email</h2>
+    <div class="storyboard-row">
+
+        <div class="screen-card wide">
+            <div class="laptop">
+                <div class="laptop-bar">
+                    <div class="laptop-dot"></div><div class="laptop-dot"></div>
+                    <div class="laptop-url">Email inbox</div>
+                </div>
+                <div class="laptop-label trigger">1 — Selection Notification (received by charity)</div>
+                <div class="laptop-content tall">
+                    <div class="wf-header">Congratulations — You're a Q2 2026 Finalist!</div>
+
+                    <div style="font-size:9px; color:#444; line-height:1.5; margin-bottom:8px;">
+                        Dear Sarah —<br><br>
+                        Congratulations! The Hunger Coalition has been selected as one of three presenting organizations at the 100 Men Who Care Wood River Valley Q2 2026 meeting.
+                    </div>
+
+                    <div style="background:#f0e8f8; border-radius:4px; padding:6px 8px; font-size:9px; margin-bottom:8px;">
+                        <div style="font-weight:700; color:#4A1E6B; margin-bottom:3px;">Meeting Details</div>
+                        <div>Date: Tuesday, April 15, 2026 · 6:00 PM</div>
+                        <div>Location: Harriman Cottage, Ketchum</div>
+                        <div>Format: 10-minute presentation (includes Q&A)</div>
+                        <div>Audience: ~100 community members</div>
+                        <div style="margin-top:3px; color:#888;">Virtual option available for your team to watch.</div>
+                    </div>
+
+                    <div style="background:#fff9e6; border:1px solid #f9c740; border-radius:4px; padding:6px 8px; font-size:9px; margin-bottom:8px;">
+                        <div style="font-weight:700; margin-bottom:3px;">One thing we need from you</div>
+                        Please complete your <strong>Payment Info Form</strong> by April 5 so our members can contribute directly to you starting on meeting day. The form takes about 5 minutes.<br><br>
+                        <div class="wf-btn" style="background:#4A1E6B; font-size:9px;">Complete Payment Info Form &rarr;</div>
+                    </div>
+
+                    <div style="font-size:9px; color:#444; margin-bottom:6px;">
+                        <strong>What to expect:</strong> With 100 members each contributing a minimum of $100, you could receive $10,000 or more — distributed across all three presenting organizations based on member preference. All contributions come directly from individual members to your organization.
+                    </div>
+
+                    <div style="font-size:9px; color:#888;">Questions? Contact Marty Lyon at marty@100menwhocarewoodrivervalley.com or (253) 209-4586.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">B1</span>Notification sets clear expectations: 10-minute presentation, potential gift range, direct-pay model. Payment info form link is the urgent CTA.</div>
+            <div class="annotation">Charity's first emotion: excitement mixed with mild anxiety about the form. Notification should feel warm and low-pressure.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════ PHASE 2: PAYMENT INFO FORM ══════════════════════ -->
+<div class="phase-divider">Phase 2 — Payment Info Form (charity completes this)</div>
+
+<div class="flow-section" style="padding-top: 24px;">
+    <h2><span>B-2</span>Charity Payment Info Form — Electronic Setup</h2>
+    <div class="storyboard-row">
+
+        <!-- The form itself (same as shown in coordinator flow, charity's POV) -->
+        <div class="screen-card wide">
+            <div class="laptop">
+                <div class="laptop-bar">
+                    <div class="laptop-dot"></div><div class="laptop-dot"></div>
+                    <div class="laptop-url">100menwhocarewoodrivervalley.com/charity-setup?token=abc123</div>
+                </div>
+                <div class="laptop-label action">2A — Payment Info Form (charity fills out)</div>
+                <div class="laptop-content tall">
+                    <div class="wf-header">Payment Info — The Hunger Coalition</div>
+                    <div class="wf-subhead">This feeds the Contribute page · 5 minutes · deadline April 5</div>
+
+                    <div style="background:#e3f2fd; border-radius:4px; padding:5px 8px; font-size:8px; color:#1565c0; margin-bottom:8px; line-height:1.4;">
+                        Your answers will appear on our member-facing Contribute page and in the post-meeting email. All 100 members will use this info to send you money directly — the more options you provide, the less friction, and the more you receive.
+                    </div>
+
+                    <div class="wf-section-head">Organization Details</div>
+                    <div class="wf-label">Legal Name *</div>
+                    <div class="wf-field filled">The Hunger Coalition</div>
+                    <div class="wf-label">EIN (needed for DAF grants via Fidelity/Schwab) *</div>
+                    <div class="wf-field filled">82-0462309</div>
+
+                    <div class="wf-section-head" style="margin-top:6px;">Online Giving</div>
+                    <div class="wf-label">Donation Page URL</div>
+                    <div class="wf-field filled">hungercoalition.org/donate</div>
+                    <div style="font-size:8px; color:#888; margin-bottom:5px;">We'll generate a QR code from this link and embed it in the post-meeting email.</div>
+
+                    <div class="wf-section-head">Electronic Payments (fee-free for you)</div>
+                    <div class="wf-label">Zelle — email or phone registered with Zelle</div>
+                    <div class="wf-field filled">donate@hungercoalition.org</div>
+                    <div class="wf-label">ACH — Routing Number</div>
+                    <div class="wf-field filled">123456789</div>
+                    <div class="wf-label">ACH — Account Number</div>
+                    <div class="wf-field filled">••••••7842</div>
+
+                    <div class="wf-section-head" style="margin-top:6px;">Checks</div>
+                    <div class="wf-label">Mailing Address *</div>
+                    <div class="wf-field filled">PO Box 145, Hailey ID 83333</div>
+
+                    <div class="wf-section-head" style="margin-top:6px;">DAF &amp; QCD (tax-advantaged gifts from major donors)</div>
+                    <div class="wf-label">Are you enrolled with Fidelity Charitable for electronic QCDs?</div>
+                    <div style="font-size:8px; color:#888; margin-bottom:5px; line-height:1.4;">Enrollment lets Fidelity send QCD distributions electronically vs. paper check, and includes the donor's name so you can match and acknowledge them. Free to enroll at charitablegiving.fidelity.com.</div>
+                    <div style="display:flex; gap:8px; margin-bottom:6px;">
+                        <label style="display:flex; align-items:center; gap:3px; font-size:9px;">
+                            <div style="width:10px; height:10px; border:1.5px solid #4A1E6B; border-radius:50%; background:#4A1E6B; box-shadow:inset 0 0 0 2px white;"></div>
+                            Yes
+                        </label>
+                        <label style="display:flex; align-items:center; gap:3px; font-size:9px;">
+                            <div style="width:10px; height:10px; border:1.5px solid #ccc; border-radius:50%;"></div>
+                            No — enroll me
+                        </label>
+                        <label style="display:flex; align-items:center; gap:3px; font-size:9px;">
+                            <div style="width:10px; height:10px; border:1.5px solid #ccc; border-radius:50%;"></div>
+                            Not sure
+                        </label>
+                    </div>
+
+                    <div class="wf-section-head">Contact for 100MWC Coordination</div>
+                    <div class="wf-label">Name and Title *</div>
+                    <div class="wf-field filled">Sarah Chen, Executive Director</div>
+                    <div class="wf-label">Email *</div>
+                    <div class="wf-field filled">sarah@hungercoalition.org</div>
+                    <div class="wf-label">Phone (for day-of questions)</div>
+                    <div class="wf-field filled">(208) 788-4244</div>
+
+                    <div class="wf-btn" style="width:100%; margin-top:8px;">Submit — I'm Ready!</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">B2a</span>The charity's primary setup task. EIN enables DAF grants. Zelle/ACH = fee-free. Fidelity enrollment question is the sophisticated piece — enables electronic QCD receipt and donor matching.</div>
+            <div class="annotation">If charity says "No — enroll me" on Fidelity, coordinator follows up with enrollment link. This is a one-time setup that benefits them beyond 100MWC.</div>
+        </div>
+
+        <div class="arrow">&#8594;</div>
+
+        <!-- Confirmation they see after submitting -->
+        <div class="screen-card">
+            <div class="laptop">
+                <div class="laptop-bar">
+                    <div class="laptop-dot"></div><div class="laptop-dot"></div>
+                    <div class="laptop-url">100menwhocarewoodrivervalley.com/charity-setup/done</div>
+                </div>
+                <div class="laptop-label success">2B — Submission Confirmed</div>
+                <div class="laptop-content">
+                    <div style="width:44px; height:44px; border-radius:50%; background:#2D8B4E; color:white; font-size:22px; line-height:44px; text-align:center; margin:8px auto 6px;"></div>
+                    <div style="text-align:center; font-size:12px; font-weight:700; color:#4A1E6B; margin-bottom:4px;">You're all set!</div>
+                    <div style="text-align:center; font-size:9px; color:#666; margin-bottom:10px;">Marty will confirm receipt.</div>
+
+                    <div style="background:#f0e8f8; border-radius:4px; padding:6px; font-size:9px; margin-bottom:8px;">
+                        <div style="font-weight:700; margin-bottom:3px;">What happens next</div>
+                        <div style="color:#444; line-height:1.5;">
+                            April 5 — Coordinator reviews your info<br>
+                            April 5 — Contribute page goes live<br>
+                            April 12 — Members get reminder email<br>
+                            April 15 — Meeting &amp; your presentation<br>
+                            April 15 — Members begin contributing<br>
+                            April 17 — Post-meeting email sent<br>
+                            April 17+ — Gifts arrive over ~2 weeks<br>
+                            April 28 — You receive a matching list
+                        </div>
+                    </div>
+
+                    <div style="font-size:9px; color:#888; line-height:1.4;">Expect approximately 80–100 individual gifts of $100 each, arriving over the next 2–3 weeks via various payment methods.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">B2b</span>Confirmation with a timeline gives charity's ED a clear picture of what's coming. Reduces "what do I do now?" anxiety.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════ PHASE 3: PRE-MEETING ════════════════════════════ -->
+<div class="phase-divider">Phase 3 — Pre-Meeting Checklist (1 week before)</div>
+
+<div class="flow-section" style="padding-top: 24px;">
+    <h2><span>B-3</span>Coordinator Sends Prep Checklist to Charity</h2>
+    <div class="storyboard-row">
+
+        <div class="screen-card wide">
+            <div class="laptop">
+                <div class="laptop-bar">
+                    <div class="laptop-dot"></div><div class="laptop-dot"></div>
+                    <div class="laptop-url">Email inbox</div>
+                </div>
+                <div class="laptop-label trigger">3 — Pre-Meeting Prep Email (received by charity)</div>
+                <div class="laptop-content">
+                    <div class="wf-header">You're One Week Out — Here's Your Checklist</div>
+                    <div style="font-size:9px; color:#444; margin: 6px 0 8px;">Hi Sarah — your presentation is one week away. A few things to confirm:</div>
+
+                    <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:8px;">
+                        <div style="display:flex; align-items:center; gap:5px; font-size:9px;">
+                            <div style="width:11px; height:11px; border:1.5px solid #2D5016; background:#2D5016; border-radius:2px; flex-shrink:0;"></div>
+                            Payment info submitted &#10003;
+                        </div>
+                        <div style="display:flex; align-items:center; gap:5px; font-size:9px;">
+                            <div style="width:11px; height:11px; border:1.5px solid #ccc; border-radius:2px; flex-shrink:0;"></div>
+                            Review your Contribute page preview: [link]
+                        </div>
+                        <div style="display:flex; align-items:center; gap:5px; font-size:9px;">
+                            <div style="width:11px; height:11px; border:1.5px solid #ccc; border-radius:2px; flex-shrink:0;"></div>
+                            Confirm who is presenting (you or a staff member)
+                        </div>
+                        <div style="display:flex; align-items:center; gap:5px; font-size:9px;">
+                            <div style="width:11px; height:11px; border:1.5px solid #ccc; border-radius:2px; flex-shrink:0;"></div>
+                            Confirm AV needs (laptop? slides? none?)
+                        </div>
+                        <div style="display:flex; align-items:center; gap:5px; font-size:9px;">
+                            <div style="width:11px; height:11px; border:1.5px solid #ccc; border-radius:2px; flex-shrink:0;"></div>
+                            Brief your bookkeeper — ~100 gifts arriving over 2–3 weeks
+                        </div>
+                    </div>
+
+                    <div style="background:#fff9e6; border:1px solid #f9c740; border-radius:4px; padding:6px; font-size:9px; margin-bottom:6px;">
+                        <strong>Presentation tip:</strong> 10 minutes total including Q&A. Members want to understand your mission and community impact — a specific ask isn't required. Stories of real people you serve are more powerful than statistics.
+                    </div>
+
+                    <div style="font-size:9px; color:#888;">Two other organizations are also presenting. All three charities receive equal time, equal placement, and equal treatment in all materials.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">B3</span>Actionable checklist + presentation guidance. Prompts charity to review their Contribute page section before it goes live to 100 members.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════ PHASE 4: GIFTS ARRIVE ════════════════════════════ -->
+<div class="phase-divider">Phase 5 — Gifts Arrive (days 1–21 post-meeting)</div>
+
+<div class="flow-section" style="padding-top: 24px;">
+    <h2><span>B-5</span>Receiving and Processing Gifts</h2>
+    <div class="storyboard-row">
+
+        <!-- What gifts look like in practice -->
+        <div class="screen-card wide">
+            <div class="laptop">
+                <div class="laptop-bar">
+                    <div class="laptop-dot"></div><div class="laptop-dot"></div>
+                    <div class="laptop-url">Charity bookkeeper view — incoming gifts</div>
+                </div>
+                <div class="laptop-label">5A — Incoming Gift Stream (bookkeeper's view)</div>
+                <div class="laptop-content tall">
+                    <div class="wf-header">Incoming 100MWC Gifts — Q2 2026</div>
+                    <div class="wf-subhead">Day 7 post-meeting · filter: memo contains "100MWC"</div>
+
+                    <div class="gift-item">
+                        <div>
+                            <div class="gift-name">Ed Forman</div>
+                            <div class="gift-method">Zelle · Apr 15 · memo: 100MWC</div>
+                        </div>
+                        <div class="gift-amount">$50</div>
+                    </div>
+                    <div class="gift-item">
+                        <div>
+                            <div class="gift-name">Jane Smith</div>
+                            <div class="gift-method">Online · Apr 15 · auto-receipt sent</div>
+                        </div>
+                        <div class="gift-amount">$100</div>
+                    </div>
+                    <div class="gift-item">
+                        <div>
+                            <div class="gift-name">Robert &amp; Lynn Miller</div>
+                            <div class="gift-method">Check · Apr 17 · memo: 100 Men Who Care</div>
+                        </div>
+                        <div class="gift-amount">$200</div>
+                    </div>
+                    <div class="gift-item">
+                        <div>
+                            <div class="gift-name">Fidelity Charitable</div>
+                            <div class="gift-method">EFT · Apr 19 · Grant from DAF · "100 Men Who Care"</div>
+                        </div>
+                        <div class="gift-amount">$100</div>
+                    </div>
+                    <div class="gift-item">
+                        <div>
+                            <div class="gift-name">Fidelity Charitable</div>
+                            <div class="gift-method">EFT · Apr 20 · QCD · "100 Men Who Care"</div>
+                        </div>
+                        <div class="gift-amount">$100</div>
+                    </div>
+                    <div class="gift-item">
+                        <div>
+                            <div class="gift-name">Schwab Charitable</div>
+                            <div class="gift-method">Check · Apr 22 · Grant · purpose: 100MWC</div>
+                        </div>
+                        <div class="gift-amount">$100</div>
+                    </div>
+                    <div class="gift-item" style="border:none;">
+                        <div>
+                            <div class="gift-name" style="color:#888;">... 47 more gifts</div>
+                            <div class="gift-method">Various methods</div>
+                        </div>
+                        <div class="gift-amount" style="color:#888;">$4,700+</div>
+                    </div>
+
+                    <hr class="wf-divider">
+                    <div style="font-size:9px; color:#2D5016; font-weight:700;">Day 7 running total: $5,350 from 54 identified gifts</div>
+                    <div style="font-size:8px; color:#888; margin-top:2px;">Fidelity/Schwab institutional gifts carry donor name in EFT records. Use matching list to connect to individual members.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">B5a</span>When "100MWC" is in the memo on every gift, bookkeeper can filter and batch-process. Institutional Fidelity/Schwab entries are identified — matching list connects them to members.</div>
+            <div class="annotation">Key insight: the "100MWC" memo instruction is what makes batch processing possible. Without it, every gift is a separate mystery.</div>
+        </div>
+
+        <div class="arrow">&#8594;</div>
+
+        <!-- Matching list received -->
+        <div class="screen-card">
+            <div class="laptop">
+                <div class="laptop-bar">
+                    <div class="laptop-dot"></div><div class="laptop-dot"></div>
+                    <div class="laptop-url">Email inbox</div>
+                </div>
+                <div class="laptop-label action">5B — Matching List (received from Coordinator)</div>
+                <div class="laptop-content tall">
+                    <div class="wf-header">100MWC Matching List — Q2 2026</div>
+                    <div style="font-size:9px; color:#444; margin: 6px 0;">Hi Sarah — attached is the matching list for your DAF and QCD donors. Use it to connect institutional gifts to individual members so you can send personalized acknowledgment letters.</div>
+
+                    <table class="wf-table">
+                        <thead>
+                            <tr><th>Member Name</th><th>Method</th><th>Sponsor / Custodian</th><th>Approx. Date</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td>DAF</td>
+                                <td>Fidelity</td>
+                                <td>Apr 19</td>
+                            </tr>
+                            <tr>
+                                <td>Bob Wilson</td>
+                                <td>DAF</td>
+                                <td>Schwab</td>
+                                <td>Apr 22</td>
+                            </tr>
+                            <tr>
+                                <td>Carol Hayes</td>
+                                <td>QCD</td>
+                                <td>Fidelity</td>
+                                <td>Apr 19</td>
+                            </tr>
+                            <tr>
+                                <td>Tom Drake</td>
+                                <td>QCD</td>
+                                <td>Vanguard</td>
+                                <td>late Apr</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="font-size:8px; color:#555; line-height:1.4; margin-top:4px;">
+                        <strong>How to use:</strong> When you see a Fidelity EFT for $100 arrive with "100 Men Who Care" in the grant notes, check this list — it's likely Jane Smith or Carol Hayes. Match and send a personal thank-you to their home address.
+                    </div>
+
+                    <div style="font-size:8px; color:#888; margin-top:5px;">Total confirmed donors: 78 of 103 members as of today.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">B5b</span>Matching list arrives from Coordinator ~2 weeks after meeting. Enables personalized acknowledgment for every donor including DAF and QCD institutional gifts.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════ PHASE 6: ACKNOWLEDGMENTS ════════════════════════ -->
+<div class="phase-divider">Phase 6 — Donor Acknowledgments (within 2 weeks of gift receipt)</div>
+
+<div class="flow-section" style="padding-top: 24px;">
+    <h2><span>B-6</span>Acknowledgment Letter Workflow</h2>
+    <div class="storyboard-row">
+
+        <div class="screen-card">
+            <div class="laptop">
+                <div class="laptop-bar">
+                    <div class="laptop-dot"></div><div class="laptop-dot"></div>
+                    <div class="laptop-url">Donor management system (Bloomerang / DonorPerfect)</div>
+                </div>
+                <div class="laptop-label">6A — Gift Entry (bookkeeper)</div>
+                <div class="laptop-content">
+                    <div class="wf-header">Enter Gift Batch</div>
+                    <div class="wf-subhead">Tag all as: 100MWC Q2 2026</div>
+
+                    <div class="wf-step">
+                        <div class="wf-step-num">1</div>
+                        <div class="wf-step-text">Filter bank/Zelle/online for "100MWC" memo. All tagged to campaign.</div>
+                    </div>
+                    <div class="wf-step">
+                        <div class="wf-step-num">2</div>
+                        <div class="wf-step-text">For each Fidelity/Schwab EFT: cross-reference matching list → assign donor name.</div>
+                    </div>
+                    <div class="wf-step">
+                        <div class="wf-step-num">3</div>
+                        <div class="wf-step-text">For QCDs: note in record that receipt goes to member, not IRA custodian address.</div>
+                    </div>
+                    <div class="wf-step">
+                        <div class="wf-step-num">4</div>
+                        <div class="wf-step-text">Run batch acknowledgment letter generation.</div>
+                    </div>
+
+                    <div style="background:#e8f5e9; border-radius:4px; padding:5px; font-size:8px; color:#2D8B4E; margin-top:6px; line-height:1.4;">
+                        <strong>Estimated staff time with matching list:</strong><br>
+                        2–3 hours total (vs. 8+ hours without)
+                    </div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">B6a</span>Matching list cuts identification work from days to hours. All gifts entered under one campaign tag for easy reporting.</div>
+        </div>
+
+        <div class="arrow">&#8594;</div>
+
+        <!-- Acknowledgment letter template -->
+        <div class="screen-card wide">
+            <div class="laptop">
+                <div class="laptop-bar">
+                    <div class="laptop-dot"></div><div class="laptop-dot"></div>
+                    <div class="laptop-url">Letter template — 100MWC acknowledgment</div>
+                </div>
+                <div class="laptop-label">6B — Acknowledgment Letter Template</div>
+                <div class="laptop-content tall">
+                    <div style="font-size:9px; color:#444; line-height:1.6; padding:4px;">
+                        <div style="margin-bottom:6px;">April 28, 2026</div>
+                        <div style="margin-bottom:6px;">Ed Forman<br>[address]</div>
+                        <div style="margin-bottom:6px;">Dear Ed,</div>
+                        <div style="margin-bottom:6px;">
+                            Thank you for your generous $50 contribution to The Hunger Coalition through 100 Men Who Care Wood River Valley. Your gift, along with the contributions of your fellow members, will help us provide [specific impact: e.g., "680 additional meals"] this quarter.
+                        </div>
+                        <div style="margin-bottom:6px;">
+                            The collective power of 100 Men Who Care is remarkable — your group's contributions this quarter will make a real and immediate difference for the families we serve in the Wood River Valley.
+                        </div>
+
+                        <div style="background:#f5f5f5; border-radius:3px; padding:5px; font-size:8px; margin-bottom:6px;">
+                            <strong>For your tax records:</strong><br>
+                            The Hunger Coalition (EIN: 82-0462309) confirms receipt of your $50 contribution on April 15, 2026. No goods or services were provided in exchange for this gift. This letter serves as your official acknowledgment for tax purposes.
+                        </div>
+
+                        <div style="margin-bottom:4px;">With deep gratitude,</div>
+                        <div style="font-weight:700;">Sarah Chen</div>
+                        <div style="font-size:8px; color:#888;">Executive Director, The Hunger Coalition</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">B6b</span>Personalized letter for each donor. IRS-compliant language. Specific impact tied to gift amount where possible. DAF donors get same letter (deduction documentation handled by their DAF sponsor).</div>
+            <div class="annotation">QCD acknowledgment: must state the amount and that no goods/services were provided. The donor's IRA custodian handles the tax exclusion — charity just needs to provide the standard acknowledgment letter.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════ PHASE 7: RELATIONSHIP ════════════════════════════ -->
+<div class="phase-divider">Phase 7 — Ongoing Relationship with 100MWC</div>
+
+<div class="flow-section" style="padding-top: 24px; padding-bottom: 48px;">
+    <h2><span>B-7</span>Post-Quarter Impact Report Back to 100MWC</h2>
+    <div class="storyboard-row">
+
+        <div class="screen-card wide">
+            <div class="laptop">
+                <div class="laptop-bar">
+                    <div class="laptop-dot"></div><div class="laptop-dot"></div>
+                    <div class="laptop-url">Email — to Coordinator</div>
+                </div>
+                <div class="laptop-label action">7 — Impact Report (charity sends to Coordinator)</div>
+                <div class="laptop-content">
+                    <div class="wf-header">Thank You from The Hunger Coalition</div>
+                    <div style="font-size:9px; color:#444; margin: 6px 0 8px; line-height:1.5;">
+                        Hi Marty — thank you and all 100 members for an extraordinary quarter. Here's a brief impact update you're welcome to share.
+                    </div>
+
+                    <div style="background:#f0e8f8; border-radius:4px; padding:8px; font-size:9px; margin-bottom:8px;">
+                        <div style="font-weight:700; color:#4A1E6B; margin-bottom:4px;">Q2 2026 Impact</div>
+                        <div style="color:#444; line-height:1.6;">
+                            Total received from 100MWC members: <strong>$5,850</strong><br>
+                            Confirmed individual donors: <strong>58 members</strong><br><br>
+                            With those funds, we will:<br>
+                            - Stock our Ketchum pantry for 3 additional months<br>
+                            - Serve approximately 1,200 additional individuals<br>
+                            - Fund one part-time weekend shift through the summer<br><br>
+                            The matching list helped us identify and personally thank every donor, including our DAF and QCD contributors. That level of care for your members is rare — thank you.
+                        </div>
+                    </div>
+
+                    <div style="font-size:9px; color:#888;">We're already planning how to use these funds. Please pass our thanks to every member who contributed.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">B7</span>Charity sends a brief impact report to Coordinator for sharing with members. Closes the loop on the giving experience and reinforces member participation for next quarter.</div>
+            <div class="annotation">This impact data feeds the Coordinator's quarterly report to members and the cumulative total on the 100MWC site. Strong acknowledgments increase member retention and giving.</div>
+        </div>
+
+    </div>
+
+    <div class="summary-grid">
+        <div class="summary-phase">Phase 1</div><div class="summary-desc">Selection notification — clear expectations, warm tone, payment form link as primary CTA</div>
+        <div class="summary-phase">Phase 2</div><div class="summary-desc">Payment Info Form — EIN, donation URL, Zelle, ACH, mailing address, Fidelity enrollment question. 5-minute task, feeds Contribute page automatically</div>
+        <div class="summary-phase">Phase 3</div><div class="summary-desc">Pre-meeting checklist — review Contribute page preview, brief bookkeeper, confirm presenter and AV</div>
+        <div class="summary-phase">Phase 4</div><div class="summary-desc">Presentation day — 10 minutes including Q&A, equal treatment with 2 other charities, contribute QR on screen during all presentations</div>
+        <div class="summary-phase">Phase 5</div><div class="summary-desc">Gifts arrive over 2–3 weeks — filtered by "100MWC" memo. Matching list from Coordinator connects Fidelity/Schwab institutional gifts to individual members</div>
+        <div class="summary-phase">Phase 6</div><div class="summary-desc">Batch acknowledgment letters — personalized for each donor, IRS-compliant. Estimated 2–3 hours total with matching list vs. 8+ hours without</div>
+        <div class="summary-phase">Phase 7</div><div class="summary-desc">Impact report back to Coordinator — specific outcomes, confirmed donor count. Feeds member communications, builds relationship for future nominations</div>
+    </div>
+</div>
+
+</body>
+</html>

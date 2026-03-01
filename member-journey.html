@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Customer Journey Map — 100 Men Who Care</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            color: #222;
+        }
+
+        .page-header {
+            background: #1B3A5C;
+            color: white;
+            padding: 28px 48px;
+        }
+        .page-header h1 { font-size: 20px; font-weight: 700; }
+        .page-header p  { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+        .page-header .nav { margin-top: 10px; font-size: 11px; opacity: 0.8; }
+        .page-header .nav a { color: #88c4e8; text-decoration: none; margin-right: 16px; }
+
+        /* ── Journey Map Container ── */
+        .journey-outer {
+            padding: 32px 48px 48px;
+            overflow-x: auto;
+        }
+
+        .journey-map {
+            min-width: 1100px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        /* Phase header row */
+        .phase-row {
+            display: grid;
+            grid-template-columns: 120px repeat(7, 1fr);
+        }
+
+        .phase-row-header {
+            display: grid;
+            grid-template-columns: 120px repeat(7, 1fr);
+            background: #1B3A5C;
+        }
+        .phase-cell-label {
+            padding: 10px 12px;
+            font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            color: rgba(255,255,255,0.5);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center;
+        }
+        .phase-cell {
+            padding: 10px 12px;
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.6px;
+            color: white;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .phase-cell.highlight { background: rgba(46, 134, 171, 0.4); }
+        .phase-cell:last-child { border-right: none; }
+
+        /* Journey rows */
+        .journey-row {
+            display: grid;
+            grid-template-columns: 120px repeat(7, 1fr);
+            border-bottom: 1px solid #eee;
+        }
+        .journey-row:last-child { border-bottom: none; }
+
+        .row-label {
+            padding: 12px;
+            font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.6px;
+            color: white;
+            display: flex; align-items: flex-start;
+            border-right: 1px solid #eee;
+            line-height: 1.4;
+        }
+        .row-label.actions    { background: #1B3A5C; }
+        .row-label.thoughts   { background: #2E86AB; }
+        .row-label.touchpoints{ background: #E8734A; }
+        .row-label.data-needs { background: #2D8B4E; }
+        .row-label.pain-joy   { background: #6c3483; }
+        .row-label.emotions   { background: #1B3A5C; }
+
+        .journey-cell {
+            padding: 10px 12px;
+            font-size: 9px; color: #444; line-height: 1.5;
+            border-right: 1px solid #eee;
+            vertical-align: top;
+        }
+        .journey-cell:last-child { border-right: none; }
+        .journey-cell.highlight { background: #f0f6fa; }
+        .journey-cell.data-focus { background: #f0f8e8; }
+
+        .jc-item { margin-bottom: 5px; }
+        .jc-item::before { content: "·  "; color: #2E86AB; font-weight: 700; }
+        .jc-item.green::before { color: #2D8B4E; }
+        .jc-item.orange::before { color: #E8734A; }
+        .jc-item.purple::before { color: #6c3483; }
+
+        .tag {
+            display: inline-block;
+            font-size: 8px; font-weight: 700;
+            padding: 1px 5px; border-radius: 3px;
+            margin: 1px;
+        }
+        .tag-blue   { background: #e3f2fd; color: #1565c0; }
+        .tag-green  { background: #e8f5e9; color: #2D8B4E; }
+        .tag-orange { background: #fff3e0; color: #E8734A; }
+        .tag-purple { background: #f3e5f5; color: #6c3483; }
+        .tag-navy   { background: #e8edf5; color: #1B3A5C; }
+
+        /* Emotion arc */
+        .emotion-arc {
+            display: flex; align-items: flex-end;
+            height: 48px; gap: 2px; padding: 4px 0;
+        }
+        .emotion-bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .emotion-bar-fill {
+            width: 70%; border-radius: 3px 3px 0 0;
+            transition: height 0.3s;
+        }
+        .emotion-label { font-size: 7px; color: #888; margin-top: 2px; text-align: center; line-height: 1.2; }
+
+        /* Moment of truth callout */
+        .mot {
+            background: #fff3e0;
+            border-left: 3px solid #E8734A;
+            padding: 5px 7px;
+            font-size: 8px; color: #555;
+            border-radius: 0 3px 3px 0;
+            margin-top: 5px; line-height: 1.4;
+        }
+        .mot strong { color: #E8734A; }
+
+        .delight {
+            background: #e8f5e9;
+            border-left: 3px solid #2D8B4E;
+            padding: 5px 7px;
+            font-size: 8px; color: #555;
+            border-radius: 0 3px 3px 0;
+            margin-top: 5px; line-height: 1.4;
+        }
+        .delight strong { color: #2D8B4E; }
+
+        /* Setup wireframe */
+        .mini-phone {
+            background: white;
+            border: 1.5px solid #2D8B4E;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 6px 0;
+        }
+        .mini-phone-header {
+            background: #2D8B4E;
+            color: white;
+            font-size: 8px; font-weight: 700;
+            padding: 3px 6px; text-align: center;
+        }
+        .mini-phone-content { padding: 5px 6px; }
+        .mini-field {
+            border: 1px solid #ddd; border-radius: 2px;
+            height: 14px; background: #fafafa;
+            margin-bottom: 3px; padding: 0 4px;
+            display: flex; align-items: center;
+            font-size: 7.5px; color: #bbb;
+        }
+        .mini-field.filled { color: #333; background: white; }
+        .mini-label { font-size: 7.5px; font-weight: 700; color: #333; margin-bottom: 1px; }
+        .mini-btn { background: #2D8B4E; color: white; border-radius: 2px; padding: 3px; font-size: 7.5px; font-weight: 700; text-align: center; margin-top: 3px; }
+
+        /* Section callout */
+        .section-callout {
+            background: #1B3A5C;
+            color: white;
+            padding: 14px 48px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        .section-callout span { opacity: 0.6; font-weight: 400; margin-left: 8px; }
+
+        /* Deep-dive section */
+        .deep-dive {
+            padding: 28px 48px;
+        }
+        .deep-dive h3 {
+            font-size: 13px; font-weight: 700;
+            color: #1B3A5C; margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #2E86AB;
+        }
+
+        .setup-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .setup-card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .setup-card h4 {
+            font-size: 11px; font-weight: 700;
+            color: #1B3A5C; margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .setup-field-row {
+            margin-bottom: 7px;
+        }
+        .setup-field-label {
+            font-size: 9px; font-weight: 700; color: #555;
+            margin-bottom: 2px;
+        }
+        .setup-field-value {
+            font-size: 9px; color: #888;
+            background: #f5f5f5; border-radius: 3px;
+            padding: 3px 6px;
+        }
+        .setup-field-why {
+            font-size: 8px; color: #aaa;
+            margin-top: 1px; line-height: 1.3;
+        }
+        .setup-required { color: #c0392b; font-size: 8px; margin-left: 2px; }
+        .setup-optional { color: #888; font-size: 8px; margin-left: 2px; }
+
+        .when-to-collect {
+            background: white; border-radius: 8px;
+            padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            max-width: 800px; margin-bottom: 32px;
+        }
+        .when-to-collect h4 { font-size: 11px; font-weight: 700; color: #1B3A5C; margin-bottom: 12px; }
+        .when-row {
+            display: grid; grid-template-columns: 140px 1fr 1fr;
+            gap: 8px; font-size: 9px; margin-bottom: 8px;
+            align-items: start;
+        }
+        .when-stage { font-weight: 700; color: #1B3A5C; }
+        .when-collect { color: #444; }
+        .when-why { color: #888; }
+
+        @media (max-width: 900px) {
+            .journey-outer { padding: 16px; }
+            .setup-grid { grid-template-columns: 1fr; }
+            .deep-dive { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>100 Men Who Care — Member Customer Journey Map</h1>
+    <p>Full lifecycle from awareness through long-term membership, with payment setup detail · Feb 2026 draft</p>
+    <div class="nav">
+        <a href="donate-wireframe.html">Member Donate Flow</a>
+        <a href="coordinator-wireframe.html">Coordinator Flow</a>
+        <a href="beneficiary-wireframe.html">Beneficiary Flow</a>
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- JOURNEY MAP TABLE                                                   -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="journey-outer">
+<div class="journey-map">
+
+    <!-- Phase header -->
+    <div class="phase-row-header">
+        <div class="phase-cell-label">Stage</div>
+        <div class="phase-cell">1. Awareness</div>
+        <div class="phase-cell">2. Joining</div>
+        <div class="phase-cell highlight">3. Profile Setup<br><span style="font-size:8px; font-weight:400; opacity:0.8;">payment info</span></div>
+        <div class="phase-cell">4. Pre-Meeting</div>
+        <div class="phase-cell">5. Meeting Day</div>
+        <div class="phase-cell">6. Post-Meeting<br><span style="font-size:8px; font-weight:400; opacity:0.8;">contribute</span></div>
+        <div class="phase-cell">7. Long-Term</div>
+    </div>
+
+    <!-- ACTIONS ROW -->
+    <div class="journey-row">
+        <div class="row-label actions">Member<br>Actions</div>
+
+        <div class="journey-cell">
+            <div class="jc-item">Hears about 100MWC from a friend or colleague</div>
+            <div class="jc-item">Visits website or attends as guest</div>
+            <div class="jc-item">Learns about the model (one hour, $100/quarter, direct giving)</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">Decides to join</div>
+            <div class="jc-item">Gives name, email, phone to Coordinator</div>
+            <div class="jc-item">Receives welcome email</div>
+            <div class="jc-item">Added to member list</div>
+        </div>
+
+        <div class="journey-cell highlight">
+            <div class="jc-item green">Optionally completes payment profile</div>
+            <div class="jc-item green">Indicates preferred payment method(s)</div>
+            <div class="jc-item green">If DAF: enters sponsor name</div>
+            <div class="jc-item green">If QCD-eligible: notes IRA custodian</div>
+            <div class="jc-item green">Confirms age if 70½+ (surfaces QCD option)</div>
+            <div class="mot"><strong>New step:</strong> Low-friction optional form. System uses this to pre-personalize the Contribute page experience.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">Receives announcement email (14 days out)</div>
+            <div class="jc-item">Reads about 3 presenting charities</div>
+            <div class="jc-item">Decides whether to attend in person or virtually</div>
+            <div class="jc-item">Receives reminder (3–5 days out)</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">Attends meeting or watches virtually</div>
+            <div class="jc-item">Listens to 3 presentations (10 min each)</div>
+            <div class="jc-item">Scans QR during or after presentations</div>
+            <div class="jc-item">May begin contributing on the spot</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">Receives post-meeting email (within 48 hrs)</div>
+            <div class="jc-item">Opens Contribute page</div>
+            <div class="jc-item">Allocates $100+ across charities</div>
+            <div class="jc-item">Selects payment method per charity</div>
+            <div class="jc-item">Completes "I've Donated" form</div>
+            <div class="jc-item">Receives tax receipt (method-dependent)</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">Contributes across 4 quarters/year</div>
+            <div class="jc-item">May nominate a charity</div>
+            <div class="jc-item">Reads impact reports</div>
+            <div class="jc-item">Attends summer social</div>
+            <div class="jc-item">May join Leadership Board</div>
+        </div>
+    </div>
+
+    <!-- THOUGHTS / FEELINGS ROW -->
+    <div class="journey-row">
+        <div class="row-label thoughts">Thoughts &amp; Feelings</div>
+
+        <div class="journey-cell">
+            <div class="jc-item">"This sounds too simple to be real."</div>
+            <div class="jc-item">"$400/year — I can do that."</div>
+            <div class="jc-item">"I know these guys. I trust them."</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">"What do I actually need to do?"</div>
+            <div class="jc-item">"Hope this isn't going to get complicated."</div>
+            <div class="jc-item">"Glad it's not a big signup process."</div>
+        </div>
+
+        <div class="journey-cell highlight">
+            <div class="jc-item">"Why do they need my payment info upfront?"</div>
+            <div class="jc-item">"Oh — this just makes it easier for me."</div>
+            <div class="jc-item">"DAF option — good, I already have one."</div>
+            <div class="jc-item">"QCD — I've been meaning to set this up."</div>
+            <div class="delight"><strong>Moment of delight:</strong> DAF-eligible members realize they can give from existing funds without a new out-of-pocket expense.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">"Which of these three charities do I care about?"</div>
+            <div class="jc-item">"Good that I can split my contribution."</div>
+            <div class="jc-item">"I'll decide at the meeting."</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">"These presentations are short — I appreciate that."</div>
+            <div class="jc-item">"The QR code is right there on screen."</div>
+            <div class="jc-item">"I'll scan it now while I'm thinking about it."</div>
+            <div class="delight"><strong>Moment of delight:</strong> Giving during the meeting, while emotionally engaged, feels natural and immediate.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">"Email has everything I need."</div>
+            <div class="jc-item">"DAF pre-fill saved me 10 minutes."</div>
+            <div class="jc-item">"Done in 3 minutes. Feels good."</div>
+            <div class="mot"><strong>Pain point for some:</strong> Zelle/ACH donors need to request receipt manually — system should remind them to do this.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item">"I like seeing the cumulative total go up."</div>
+            <div class="jc-item">"$757,000+ since 2013 — that's real."</div>
+            <div class="jc-item">"I know where my money goes."</div>
+        </div>
+    </div>
+
+    <!-- TOUCHPOINTS ROW -->
+    <div class="journey-row">
+        <div class="row-label touchpoints">Touchpoints</div>
+
+        <div class="journey-cell">
+            <div class="tag tag-navy">Word of mouth</div>
+            <div class="tag tag-navy">Website</div>
+            <div class="tag tag-navy">Guest meeting invite</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="tag tag-blue">Coordinator or Chair conversation</div>
+            <div class="tag tag-blue">Welcome email</div>
+            <div class="tag tag-blue">Website member FAQ</div>
+        </div>
+
+        <div class="journey-cell highlight">
+            <div class="tag tag-green">Payment profile form (new)</div>
+            <div class="tag tag-green">Welcome email with optional setup link</div>
+            <div class="tag tag-green">Member profile page (update anytime)</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="tag tag-orange">Announcement email</div>
+            <div class="tag tag-orange">Reminder email</div>
+            <div class="tag tag-orange">Charity descriptions on website</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="tag tag-navy">Meeting venue</div>
+            <div class="tag tag-navy">Presentations</div>
+            <div class="tag tag-navy">QR code on screen</div>
+            <div class="tag tag-blue">Contribute page (live)</div>
+            <div class="tag tag-navy">Virtual meeting link</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="tag tag-orange">Post-meeting email</div>
+            <div class="tag tag-blue">Contribute page</div>
+            <div class="tag tag-blue">Payment method screens</div>
+            <div class="tag tag-blue">"I've Donated" form</div>
+            <div class="tag tag-orange">Two-week reminder</div>
+            <div class="tag tag-green">Tax receipt from charity/DAF</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="tag tag-orange">Quarterly emails</div>
+            <div class="tag tag-navy">Summer social</div>
+            <div class="tag tag-blue">Impact reports</div>
+            <div class="tag tag-navy">Annual Meeting</div>
+        </div>
+    </div>
+
+    <!-- DATA NEEDS ROW -->
+    <div class="journey-row">
+        <div class="row-label data-needs">What System<br>Needs from<br>Member</div>
+
+        <div class="journey-cell">
+            <div class="jc-item green">Nothing yet</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item green">Name <span class="tag tag-orange">required</span></div>
+            <div class="jc-item green">Email <span class="tag tag-orange">required</span></div>
+            <div class="jc-item green">Phone <span class="tag tag-navy">optional</span></div>
+        </div>
+
+        <div class="journey-cell highlight data-focus">
+            <div style="font-size:9px; font-weight:700; color:#2D5016; margin-bottom:4px;">All optional — collected once, used every quarter:</div>
+            <div class="jc-item green">Preferred payment method(s)</div>
+            <div class="jc-item green">DAF sponsor (if applicable)</div>
+            <div class="jc-item green">IRA custodian (if QCD-eligible)</div>
+            <div class="jc-item green">Age 70½+ flag (surfaces QCD option)</div>
+            <div class="jc-item green">Mailing address (for check-based acknowledgments)</div>
+            <div style="font-size:8px; color:#888; margin-top:5px; line-height:1.4;">This data personalizes the Contribute page: pre-selects method, pre-fills DAF widget, shows/hides QCD path.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item green">Nothing new — uses data from profile</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item green">Nothing new — may choose to give on the spot</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item green">Allocation per charity (on Contribute page)</div>
+            <div class="jc-item green">Payment method confirmation (per charity)</div>
+            <div class="jc-item green">DAF sponsor confirmation / send date (if DAF)</div>
+            <div class="jc-item green">IRA custodian + send date (if QCD)</div>
+            <div style="font-size:8px; color:#888; margin-top:4px;">Profile data pre-fills most of this. Member just confirms.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="jc-item green">Profile updates if methods change</div>
+            <div class="jc-item green">Nomination form data (if nominating a charity)</div>
+        </div>
+    </div>
+
+    <!-- PAIN POINTS / MOMENTS OF DELIGHT -->
+    <div class="journey-row">
+        <div class="row-label pain-joy">Pain Points &amp; Moments of Delight</div>
+
+        <div class="journey-cell">
+            <div class="mot"><strong>Pain:</strong> Word of mouth is the only acquisition channel — no systematic way to find new members.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="delight"><strong>Delight:</strong> Frictionless join — no dues, no contracts, no lengthy onboarding.</div>
+        </div>
+
+        <div class="journey-cell highlight">
+            <div class="delight"><strong>Delight:</strong> Affluent/retired members discover DAF and QCD paths they didn't know were available.</div>
+            <div class="mot" style="margin-top:5px;"><strong>Pain:</strong> If skipped entirely, every quarter the member has to figure out payment from scratch.</div>
+            <div class="mot" style="margin-top:5px;"><strong>Design note:</strong> Framing matters. "Help us help you give faster" lands better than "fill out this form."</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="delight"><strong>Delight:</strong> Charity descriptions in advance let members arrive with opinions already forming.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="delight"><strong>Delight:</strong> QR code live during presentations — giving happens while energy is highest.</div>
+            <div class="mot" style="margin-top:5px;"><strong>Pain:</strong> Virtual attendees may feel disconnected from the room energy.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="delight"><strong>Delight:</strong> 3-minute donation with pre-filled DAF. "I'm done before I finish my coffee."</div>
+            <div class="mot" style="margin-top:5px;"><strong>Pain:</strong> Zelle/ACH donors forget to request a receipt. Need a reminder.</div>
+            <div class="mot" style="margin-top:5px;"><strong>Pain:</strong> Members who gave $0 to a charity feel odd about the confirmation form.</div>
+        </div>
+
+        <div class="journey-cell">
+            <div class="delight"><strong>Delight:</strong> Cumulative total ($757K+) makes membership feel meaningful over time.</div>
+            <div class="delight" style="margin-top:5px;"><strong>Delight:</strong> Summer social deepens relationships beyond the transactions.</div>
+        </div>
+    </div>
+
+    <!-- EMOTION ARC ROW -->
+    <div class="journey-row">
+        <div class="row-label emotions">Emotion Arc</div>
+
+        <div class="journey-cell" style="padding-bottom:8px;">
+            <div style="font-size:8px; color:#888; margin-bottom:3px;">Curious</div>
+            <div style="height:30px; background: linear-gradient(to right, #ddd, #2E86AB); border-radius:3px; width:60%;"></div>
+        </div>
+        <div class="journey-cell">
+            <div style="font-size:8px; color:#888; margin-bottom:3px;">Positive anticipation</div>
+            <div style="height:40px; background: #2E86AB; border-radius:3px; width:70%;"></div>
+        </div>
+        <div class="journey-cell highlight">
+            <div style="font-size:8px; color:#888; margin-bottom:3px;">Optional delight (DAF/QCD discovery)</div>
+            <div style="height:50px; background: #2D8B4E; border-radius:3px; width:80%;"></div>
+        </div>
+        <div class="journey-cell">
+            <div style="font-size:8px; color:#888; margin-bottom:3px;">Engaged</div>
+            <div style="height:44px; background: #2E86AB; border-radius:3px; width:75%;"></div>
+        </div>
+        <div class="journey-cell">
+            <div style="font-size:8px; color:#888; margin-bottom:3px;">Inspired — peak</div>
+            <div style="height:60px; background: #1B3A5C; border-radius:3px; width:90%;"></div>
+        </div>
+        <div class="journey-cell">
+            <div style="font-size:8px; color:#888; margin-bottom:3px;">Satisfied · can drop if friction</div>
+            <div style="display:flex; gap:4px; align-items:flex-end;">
+                <div style="height:55px; background:#2D8B4E; border-radius:3px; width:40%; position:relative;">
+                    <div style="position:absolute; bottom:-12px; left:0; font-size:7px; color:#2D8B4E; white-space:nowrap;">easy path</div>
+                </div>
+                <div style="height:28px; background:#E8734A; border-radius:3px; width:40%; position:relative;">
+                    <div style="position:absolute; bottom:-12px; left:0; font-size:7px; color:#E8734A; white-space:nowrap;">friction path</div>
+                </div>
+            </div>
+        </div>
+        <div class="journey-cell">
+            <div style="font-size:8px; color:#888; margin-bottom:3px;">Pride in collective impact</div>
+            <div style="height:52px; background: linear-gradient(to right, #2E86AB, #1B3A5C); border-radius:3px; width:85%;"></div>
+        </div>
+    </div>
+
+</div><!-- end journey-map -->
+</div><!-- end journey-outer -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- DEEP DIVE: PAYMENT PROFILE SETUP                                    -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="section-callout">
+    Payment Profile Setup — Deep Dive
+    <span>What the system needs to collect from members, when, and why</span>
+</div>
+
+<div class="deep-dive">
+
+    <h3>What to Collect at Each Stage</h3>
+
+    <div class="when-to-collect">
+        <h4>Collection Timing — Principle: Collect the minimum, at the right moment, for clear reason</h4>
+
+        <div class="when-row" style="font-size:9px; font-weight:700; color:#888; border-bottom:1px solid #eee; padding-bottom:4px; margin-bottom:6px;">
+            <div>Stage</div><div>Collect</div><div>Why it matters</div>
+        </div>
+        <div class="when-row">
+            <div class="when-stage">At joining</div>
+            <div class="when-collect">Name, email, phone (required)</div>
+            <div class="when-why">Needed to send announcements and post-meeting emails</div>
+        </div>
+        <div class="when-row">
+            <div class="when-stage">Welcome email link (optional)</div>
+            <div class="when-collect">Payment preference, DAF sponsor, IRA custodian, age flag</div>
+            <div class="when-why">Pre-fills Contribute page on first use; member can skip entirely and fill in at contribute time</div>
+        </div>
+        <div class="when-row">
+            <div class="when-stage">First Contribute page visit</div>
+            <div class="when-collect">If not done at join: prompt for method preference (lightweight)</div>
+            <div class="when-why">One-time save means every future quarter is pre-filled</div>
+        </div>
+        <div class="when-row">
+            <div class="when-stage">Each "I've Donated" form</div>
+            <div class="when-collect">DAF sponsor + approx. send date (if DAF); IRA custodian + send date (if QCD)</div>
+            <div class="when-why">Feeds matching list for that quarter's charities; also updates profile for future use</div>
+        </div>
+        <div class="when-row">
+            <div class="when-stage">Any time</div>
+            <div class="when-collect">Member can update profile: change payment preference, add DAF/IRA info, update address</div>
+            <div class="when-why">Life changes — member opens a new DAF, turns 70½, changes banks</div>
+        </div>
+    </div>
+
+
+    <h3>Payment Profile Fields — What Each Unlocks</h3>
+
+    <div class="setup-grid">
+
+        <!-- Card 1: Basic identity -->
+        <div class="setup-card">
+            <h4>At Joining — Required</h4>
+
+            <div class="setup-field-row">
+                <div class="setup-field-label">Full Name <span class="setup-required">*</span></div>
+                <div class="setup-field-value">Ed Forman</div>
+                <div class="setup-field-why">Appears on matching list so charities can identify your gift. Used in acknowledgment letters.</div>
+            </div>
+            <div class="setup-field-row">
+                <div class="setup-field-label">Email Address <span class="setup-required">*</span></div>
+                <div class="setup-field-value">ed@example.com</div>
+                <div class="setup-field-why">All member communications. Zelle payment (if charity uses email for Zelle).</div>
+            </div>
+            <div class="setup-field-row">
+                <div class="setup-field-label">Mobile Phone <span class="setup-optional">optional</span></div>
+                <div class="setup-field-value">(208) 555-0100</div>
+                <div class="setup-field-why">SMS reminders if member opts in. Coordinator day-of contact.</div>
+            </div>
+            <div class="setup-field-row">
+                <div class="setup-field-label">Mailing Address <span class="setup-optional">optional</span></div>
+                <div class="setup-field-value">123 Main St, Hailey ID 83333</div>
+                <div class="setup-field-why">Charity uses for tax acknowledgment letters when Zelle/ACH/check payment doesn't include address.</div>
+            </div>
+        </div>
+
+        <!-- Card 2: Payment preference -->
+        <div class="setup-card">
+            <h4>Payment Profile — Optional but High-Value</h4>
+
+            <div class="setup-field-row">
+                <div class="setup-field-label">Preferred Payment Method(s) <span class="setup-optional">optional</span></div>
+                <div class="setup-field-value">Zelle + DAF (selected)</div>
+                <div class="setup-field-why">Pre-selects this method on the Contribute page so member doesn't have to choose from 8 options every quarter.</div>
+            </div>
+            <div class="setup-field-row">
+                <div class="setup-field-label">DAF Sponsor <span class="setup-optional">if DAF user</span></div>
+                <div class="setup-field-value">Fidelity Charitable</div>
+                <div class="setup-field-why">Pre-opens the right DAF sponsor portal on the Contribute page. Saves 2–3 clicks per quarter.</div>
+            </div>
+            <div class="setup-field-row">
+                <div class="setup-field-label">Are you age 70½ or older? <span class="setup-optional">optional</span></div>
+                <div class="setup-field-value">Yes</div>
+                <div class="setup-field-why">Surfaces the QCD path prominently on the Contribute page. Hidden for younger members to reduce clutter.</div>
+            </div>
+            <div class="setup-field-row">
+                <div class="setup-field-label">IRA Custodian <span class="setup-optional">if 70½+ and uses QCD</span></div>
+                <div class="setup-field-value">Schwab</div>
+                <div class="setup-field-why">Pre-fills QCD instruction letter and identifies check on matching list. Coordinator can send Schwab-specific instructions.</div>
+            </div>
+        </div>
+
+        <!-- Card 3: What this enables -->
+        <div class="setup-card">
+            <h4>What This Unlocks — Per-Method Experience</h4>
+
+            <div class="setup-field-row">
+                <div class="setup-field-label" style="color:#2D8B4E;">If method = Online / Zelle / Venmo</div>
+                <div class="setup-field-why" style="color:#444;">Contribute page pre-highlights their preferred method. Charity Zelle/account details already visible. Member taps, pays, done.</div>
+            </div>
+            <div class="setup-field-row">
+                <div class="setup-field-label" style="color:#2D8B4E;">If method = DAF (Fidelity, Schwab, etc.)</div>
+                <div class="setup-field-why" style="color:#444;">DAF Direct widget opens their sponsor by default. Charity EIN pre-filled. Grant recommendation pre-populated. Member confirms and submits.</div>
+            </div>
+            <div class="setup-field-row">
+                <div class="setup-field-label" style="color:#2D8B4E;">If method = QCD (age 70½+)</div>
+                <div class="setup-field-why" style="color:#444;">QCD path appears prominently. Instruction letter pre-filled with their custodian's name and charity's address. Download and email to custodian takes 2 minutes.</div>
+            </div>
+            <div class="setup-field-row">
+                <div class="setup-field-label" style="color:#2D8B4E;">If method = Check</div>
+                <div class="setup-field-why" style="color:#444;">Check handling instructions shown. IRA check slip (for QCD via checkbook) pre-filled with charity info. No personalization needed from profile.</div>
+            </div>
+            <div style="font-size:8px; color:#888; margin-top:6px; line-height:1.4;">Members who skip the profile still get the full Contribute page — they just choose from all options each time.</div>
+        </div>
+
+    </div>
+
+
+    <h3>Payment Profile Wireframe — Setup Screen</h3>
+
+    <div style="display:flex; gap:24px; flex-wrap:wrap; margin-bottom:32px;">
+
+        <!-- Phone: Welcome email CTA -->
+        <div style="width:200px; flex-shrink:0;">
+            <div style="border: 2px solid #2D8B4E; border-radius:16px; overflow:hidden; background:white;">
+                <div style="height:8px; background:#2D8B4E;"></div>
+                <div style="font-size:9px; color:#888; padding:3px 8px; background:#f5f5f5; border-bottom:1px solid #eee;">Welcome email</div>
+                <div style="background:#2D8B4E; color:white; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; padding:3px 8px;">Welcome to 100MWC</div>
+                <div style="padding:10px;">
+                    <div style="font-size:9px; color:#1B3A5C; font-weight:700; margin-bottom:4px;">Welcome, Ed!</div>
+                    <div style="font-size:8px; color:#444; margin-bottom:8px; line-height:1.4;">You're confirmed as a member. Your first meeting is April 15.</div>
+                    <div style="font-size:8px; color:#444; margin-bottom:6px; line-height:1.4;">Optional: Tell us how you prefer to give and we'll pre-fill the Contribute page for you every quarter — saves about 5 minutes each time.</div>
+                    <div style="background:#2D8B4E; color:white; border-radius:4px; padding:5px; font-size:9px; font-weight:700; text-align:center; margin-bottom:4px;">Set Up My Payment Profile</div>
+                    <div style="color:#888; font-size:8px; text-align:center;">or skip — takes 3 min to do at contribute time</div>
+                </div>
+            </div>
+            <div style="margin-top:8px; font-size:11px; color:#555; text-align:center; line-height:1.4;">Welcome email contains an optional "Set Up" CTA. Low pressure — skippable.</div>
+        </div>
+
+        <!-- Phone: Profile form -->
+        <div style="width:200px; flex-shrink:0;">
+            <div style="border: 2px solid #2D8B4E; border-radius:16px; overflow:hidden; background:white;">
+                <div style="height:8px; background:#2D8B4E;"></div>
+                <div style="font-size:9px; color:#888; padding:3px 8px; background:#f5f5f5; border-bottom:1px solid #eee;">100menwhocarewoodrivervalley.com/profile</div>
+                <div style="background:#2D8B4E; color:white; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; padding:3px 8px;">My Payment Profile</div>
+                <div style="padding:10px;">
+                    <div style="font-size:9px; font-weight:700; color:#333; margin-bottom:2px;">How do you prefer to give?</div>
+                    <div style="font-size:8px; color:#888; margin-bottom:5px;">Check all that apply. We'll pre-select these on the Contribute page.</div>
+
+                    <div style="display:flex; flex-direction:column; gap:3px; margin-bottom:7px;">
+                        <label style="display:flex; align-items:center; gap:4px; font-size:8.5px;"><input type="checkbox" checked style="width:10px; height:10px;"> Check</label>
+                        <label style="display:flex; align-items:center; gap:4px; font-size:8.5px;"><input type="checkbox" checked style="width:10px; height:10px;"> Zelle</label>
+                        <label style="display:flex; align-items:center; gap:4px; font-size:8.5px;"><input type="checkbox" style="width:10px; height:10px;"> Online / credit card</label>
+                        <label style="display:flex; align-items:center; gap:4px; font-size:8.5px;"><input type="checkbox" checked style="width:10px; height:10px;"> Donor Advised Fund (DAF)</label>
+                        <label style="display:flex; align-items:center; gap:4px; font-size:8.5px;"><input type="checkbox" style="width:10px; height:10px;"> IRA / QCD (age 70½+)</label>
+                    </div>
+
+                    <div style="font-size:8.5px; font-weight:700; color:#333; margin-bottom:2px;">DAF Sponsor (if applicable)</div>
+                    <div style="border:1px solid #2D8B4E; border-radius:3px; height:18px; background:white; margin-bottom:5px; padding:0 5px; display:flex; align-items:center; font-size:8.5px; color:#333;">Fidelity Charitable</div>
+
+                    <div style="font-size:8.5px; font-weight:700; color:#333; margin-bottom:2px;">Are you age 70½ or older?</div>
+                    <div style="display:flex; gap:8px; margin-bottom:5px;">
+                        <label style="display:flex; align-items:center; gap:3px; font-size:8.5px;"><input type="radio" style="width:9px; height:9px;"> Yes</label>
+                        <label style="display:flex; align-items:center; gap:3px; font-size:8.5px;"><input type="radio" checked style="width:9px; height:9px;"> No</label>
+                    </div>
+
+                    <div style="background:#2D8B4E; color:white; border-radius:4px; padding:4px; font-size:9px; font-weight:700; text-align:center;">Save Profile</div>
+                </div>
+            </div>
+            <div style="margin-top:8px; font-size:11px; color:#555; text-align:center; line-height:1.4;">Profile form. Minimal fields. DAF sponsor field appears only if DAF checked.</div>
+        </div>
+
+        <!-- Phone: Contribute page personalized -->
+        <div style="width:200px; flex-shrink:0;">
+            <div style="border: 2px solid #1B3A5C; border-radius:16px; overflow:hidden; background:white;">
+                <div style="height:8px; background:#1B3A5C;"></div>
+                <div style="font-size:9px; color:#888; padding:3px 8px; background:#f5f5f5; border-bottom:1px solid #eee;">Contribute page — personalized</div>
+                <div style="background:#1B3A5C; color:white; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; padding:3px 8px;">Contribute — Q2 2026</div>
+                <div style="padding:10px;">
+                    <div style="font-size:8px; color:#2D8B4E; margin-bottom:6px;">Hi Ed — your preferred methods are pre-selected.</div>
+
+                    <div style="border:1px solid #ddd; border-radius:4px; padding:5px; margin-bottom:4px;">
+                        <div style="font-size:9px; font-weight:700; color:#1B3A5C;">Hunger Coalition</div>
+                        <div style="font-size:8px; color:#666; margin:2px 0;">Amount: $100</div>
+                        <div style="font-size:8px;">Method: <strong style="color:#2D8B4E;">Zelle</strong> <span style="font-size:7px; background:#e8f5e9; color:#2D8B4E; padding:1px 4px; border-radius:2px;">pre-selected</span></div>
+                    </div>
+
+                    <div style="border:1px solid #ddd; border-radius:4px; padding:5px; margin-bottom:8px;">
+                        <div style="font-size:9px; font-weight:700; color:#1B3A5C;">YMCA Youth Fund</div>
+                        <div style="font-size:8px; color:#666; margin:2px 0;">Amount: $0</div>
+                        <div style="font-size:8px; color:#888;">Method: — (tap to add)</div>
+                    </div>
+
+                    <div style="background:#2D8B4E; color:white; border-radius:4px; padding:4px; font-size:9px; font-weight:700; text-align:center;">Continue to Payment &rarr;</div>
+                    <div style="font-size:8px; color:#888; text-align:center; margin-top:4px;">DAF path ready when you need it</div>
+                </div>
+            </div>
+            <div style="margin-top:8px; font-size:11px; color:#555; text-align:center; line-height:1.4;">Result: Contribute page greets member by name, Zelle pre-selected, DAF path ready. 3-minute flow instead of 10.</div>
+            <div style="margin-top:6px; background:#e8f5e9; border-left:3px solid #2D8B4E; padding:5px 7px; font-size:10px; color:#555; border-radius:0 3px 3px 0;">Delight moment: "It remembered how I give."</div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
