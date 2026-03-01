@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate Workflow — Storyboard &amp; Wireframe</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            color: #222;
+        }
+
+        /* ── Page header ───────────────────────────────────────────── */
+        .page-header {
+            background: #1B3A5C;
+            color: white;
+            padding: 32px 48px;
+        }
+        .page-header h1 { font-size: 22px; font-weight: 700; }
+        .page-header p  { font-size: 13px; opacity: 0.75; margin-top: 4px; }
+
+        /* ── Legend ─────────────────────────────────────────────────── */
+        .legend {
+            display: flex; gap: 24px; flex-wrap: wrap;
+            padding: 16px 48px;
+            background: #e8ecf0;
+            border-bottom: 1px solid #cdd3da;
+            font-size: 12px;
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .dot-trigger  { background: #6c757d; }
+        .dot-screen   { background: #1B3A5C; }
+        .dot-decision { background: #E8734A; }
+        .dot-action   { background: #2D8B4E; }
+        .dot-end      { background: #2E86AB; }
+
+        /* ── Flow row labels ─────────────────────────────────────────── */
+        .flow-section {
+            padding: 32px 48px 0;
+        }
+        .flow-section h2 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #888;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #d0d5dd;
+        }
+
+        /* ── Storyboard row ──────────────────────────────────────────── */
+        .storyboard-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        /* ── Arrow connector ─────────────────────────────────────────── */
+        .arrow {
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            color: #aaa;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .arrow.branch { color: #E8734A; }
+
+        /* ── Screen card ─────────────────────────────────────────────── */
+        .screen-card {
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        /* phone chrome */
+        .phone {
+            background: white;
+            border: 2.5px solid #1B3A5C;
+            border-radius: 18px;
+            overflow: hidden;
+            position: relative;
+        }
+        .phone-notch {
+            height: 8px;
+            background: #1B3A5C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .phone-notch::after {
+            content: '';
+            width: 40px; height: 4px;
+            background: #2E86AB;
+            border-radius: 2px;
+        }
+        .phone-status {
+            font-size: 9px;
+            color: #888;
+            padding: 3px 8px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* screen label strip */
+        .screen-label {
+            background: #1B3A5C;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 3px 8px;
+        }
+        .screen-label.decision { background: #E8734A; }
+        .screen-label.action   { background: #2D8B4E; }
+        .screen-label.end      { background: #2E86AB; }
+        .screen-label.trigger  { background: #6c757d; }
+
+        /* phone content */
+        .phone-content {
+            padding: 10px;
+            min-height: 240px;
+        }
+        .phone-content.compact { min-height: 180px; }
+        .phone-content.tall    { min-height: 300px; }
+
+        /* card caption */
+        .card-caption {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #555;
+            line-height: 1.4;
+            text-align: center;
+        }
+        .card-num {
+            display: inline-block;
+            background: #1B3A5C;
+            color: white;
+            border-radius: 50%;
+            width: 18px; height: 18px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 18px;
+            text-align: center;
+            margin-right: 4px;
+        }
+
+        /* ── Wireframe UI atoms ───────────────────────────────────────── */
+        .wf-header {
+            background: #1B3A5C;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 6px 8px;
+            margin: -10px -10px 8px -10px;
+            text-align: center;
+        }
+        .wf-subhead {
+            font-size: 9px;
+            color: #888;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .wf-body-text {
+            font-size: 9px;
+            color: #444;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+        .wf-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: #1B3A5C;
+            margin-bottom: 2px;
+        }
+        .wf-field {
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            height: 22px;
+            background: #fafafa;
+            margin-bottom: 6px;
+            padding: 0 6px;
+            display: flex; align-items: center;
+            font-size: 9px;
+            color: #bbb;
+        }
+        .wf-field.filled { color: #333; background: white; }
+        .wf-btn {
+            background: #2E86AB;
+            color: white;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 9px;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 6px;
+            cursor: pointer;
+        }
+        .wf-btn.green  { background: #2D8B4E; }
+        .wf-btn.orange { background: #E8734A; }
+        .wf-btn.ghost  {
+            background: white;
+            color: #1B3A5C;
+            border: 1px solid #1B3A5C;
+        }
+        .wf-divider {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 8px 0;
+        }
+        .wf-badge {
+            display: inline-block;
+            font-size: 8px;
+            font-weight: 700;
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+        .badge-free { background: #e8f5e9; color: #2D8B4E; }
+        .badge-fee  { background: #fff3e0; color: #E8734A; }
+        .badge-new  { background: #e3f2fd; color: #1565c0; }
+
+        /* email mockup */
+        .wf-email-header {
+            background: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+            padding: 5px 8px;
+            font-size: 8px;
+            color: #666;
+            margin: -10px -10px 8px -10px;
+        }
+        .wf-email-subject {
+            font-size: 10px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 3px;
+        }
+
+        /* charity card in wireframe */
+        .wf-charity-card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px 6px;
+            margin-bottom: 6px;
+        }
+        .wf-charity-name {
+            font-size: 9px;
+            font-weight: 700;
+            color: #1B3A5C;
+            margin-bottom: 2px;
+        }
+        .wf-charity-desc {
+            font-size: 8px;
+            color: #666;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        .wf-amount-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .wf-amount-label { font-size: 8px; color: #888; }
+        .wf-amount-input {
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            width: 40px; height: 16px;
+            font-size: 9px;
+            padding: 0 3px;
+        }
+
+        /* QR mockup */
+        .wf-qr {
+            width: 60px; height: 60px;
+            border: 1px solid #ddd;
+            margin: 6px auto;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            padding: 4px;
+        }
+        .wf-qr-cell { background: #333; border-radius: 0.5px; }
+        .wf-qr-cell.w { background: #fff; }
+
+        /* step badge */
+        .wf-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+            margin-bottom: 6px;
+        }
+        .wf-step-num {
+            width: 14px; height: 14px;
+            background: #2E86AB;
+            color: white;
+            border-radius: 50%;
+            font-size: 8px;
+            font-weight: 700;
+            line-height: 14px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .wf-step-text { font-size: 9px; color: #444; line-height: 1.3; }
+
+        /* payment option row */
+        .wf-pay-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 4px;
+        }
+        .wf-pay-name { font-size: 9px; font-weight: 600; }
+        .wf-radio {
+            width: 10px; height: 10px;
+            border: 1.5px solid #1B3A5C;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .wf-radio.selected {
+            background: #1B3A5C;
+            box-shadow: inset 0 0 0 2px white;
+        }
+
+        /* confirmation checkmark */
+        .wf-check-circle {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #2D8B4E;
+            color: white;
+            font-size: 20px;
+            line-height: 40px;
+            text-align: center;
+            margin: 10px auto;
+        }
+
+        /* annotation */
+        .annotation {
+            margin-top: 8px;
+            background: #fffde7;
+            border-left: 3px solid #f9c740;
+            padding: 6px 8px;
+            font-size: 10px;
+            color: #555;
+            line-height: 1.4;
+            border-radius: 0 3px 3px 0;
+        }
+
+        /* decision diamond */
+        .decision-diamond {
+            width: 90px; height: 90px;
+            background: white;
+            border: 2.5px solid #E8734A;
+            transform: rotate(45deg);
+            margin: 30px auto;
+            position: relative;
+        }
+        .decision-diamond-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 9px;
+            font-weight: 700;
+            text-align: center;
+            color: #E8734A;
+            width: 80px;
+        }
+
+        /* branch labels */
+        .branch-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #E8734A;
+            text-align: center;
+        }
+
+        /* method grid */
+        .method-grid {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        .method-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* flow connector line */
+        .flow-connector {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin: 4px 0 20px;
+            padding: 0 48px;
+        }
+        .flow-connector .line {
+            flex: 1;
+            height: 2px;
+            background: #cdd3da;
+        }
+        .flow-connector .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #1B3A5C;
+            flex-shrink: 0;
+        }
+
+        /* entry points section */
+        .entry-section {
+            padding: 24px 48px 0;
+        }
+
+        /* ── Responsive ───────────────────────────────────────────────── */
+        @media (max-width: 900px) {
+            .flow-section, .legend, .entry-section { padding-left: 16px; padding-right: 16px; }
+            .screen-card { width: 160px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>100 Men Who Care — Donate Workflow Storyboard</h1>
+    <p>Mobile-first wireframe showing the complete member contribution journey · Feb 2026 draft</p>
+</div>
+
+<div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-trigger"></div> Entry point / trigger</div>
+    <div class="legend-item"><div class="legend-dot dot-screen"></div> Screen / page</div>
+    <div class="legend-item"><div class="legend-dot dot-decision"></div> Decision / branch</div>
+    <div class="legend-item"><div class="legend-dot dot-action"></div> Completed action</div>
+    <div class="legend-item"><div class="legend-dot dot-end"></div> End state</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PHASE 1: Entry Points                                               -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="flow-section">
+    <h2>Phase 1 — Entry Points (two paths into the donate flow)</h2>
+
+    <div class="storyboard-row">
+
+        <!-- Entry A: In-person QR -->
+        <div class="screen-card">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label trigger">Entry A — At Meeting</div>
+                <div class="phone-content compact">
+                    <div class="wf-header">During Presentations</div>
+                    <div class="wf-body-text" style="text-align:center; margin-top:6px;">
+                        Projected on screen behind presenters:
+                    </div>
+                    <div class="wf-qr">
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div>
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div>
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div>
+                        <div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div>
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div>
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div>
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell"></div>
+                    </div>
+                    <div class="wf-body-text" style="text-align:center; font-size:8px; color:#888;">
+                        100menwhocarewoodrivervalley.com/contribute
+                    </div>
+                    <div class="wf-body-text" style="text-align:center; margin-top:4px;">
+                        Scan now — page is live during presentations
+                    </div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">1A</span>QR code on screen lets members start giving during or right after presentations, while energy is high.</div>
+            <div class="annotation">Design note: QR should be visible for all 3 presentations, not just during one charity's slot.</div>
+        </div>
+
+        <div class="arrow">&#8594;</div>
+
+        <!-- Entry B: Post-meeting email -->
+        <div class="screen-card" style="width:240px;">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label trigger">Entry B — Post-Meeting Email</div>
+                <div class="phone-content">
+                    <div class="wf-email-header">
+                        <div>From: marty@100menwhocarewoodrivervalley.com</div>
+                        <div class="wf-email-subject">Q1 2026 Results — Three Great Causes Need You</div>
+                    </div>
+                    <div class="wf-body-text">Hi everyone — thank you for attending Tuesday's meeting. Three outstanding organizations presented. Your $100 minimum can go to one, two, or all three.</div>
+                    <hr class="wf-divider">
+                    <div class="wf-label">Presenting Organizations</div>
+                    <div style="font-size:9px; padding: 3px 0; border-bottom: 1px solid #eee;">1. Valley Crisis Center</div>
+                    <div style="font-size:9px; padding: 3px 0; border-bottom: 1px solid #eee;">2. Wood River YMCA Youth Fund</div>
+                    <div style="font-size:9px; padding: 3px 0; margin-bottom: 6px;">3. Community School Scholarships</div>
+                    <div class="wf-btn" style="font-size:10px; padding: 8px;">
+                        Contribute Now &rarr;
+                    </div>
+                    <div style="font-size:8px; color:#888; text-align:center; margin-top:4px;">or scan QR code below</div>
+                    <div class="wf-qr" style="width:40px; height:40px; margin:4px auto;">
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div>
+                        <div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div>
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div>
+                        <div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div>
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div>
+                        <div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div>
+                        <div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div><div class="wf-qr-cell w"></div><div class="wf-qr-cell"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">1B</span>Post-meeting email sent within 48 hours. Both CTA button and QR code land on the same Contribute page.</div>
+            <div class="annotation">Also: two-week follow-up reminder email if no "I've Donated" confirmation logged.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PHASE 2: Contribute Page                                            -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="flow-section">
+    <h2>Phase 2 — Contribute Page (single URL, updated each quarter)</h2>
+
+    <div class="storyboard-row">
+
+        <!-- Screen 2: Contribute page top -->
+        <div class="screen-card" style="width:220px;">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label">Screen 2A — Contribute Page (top)</div>
+                <div class="phone-content tall">
+                    <div class="wf-header">Your Contribution</div>
+                    <div class="wf-subhead">Q1 2026 · Three presenting organizations</div>
+
+                    <div class="wf-charity-card">
+                        <div class="wf-charity-name">Valley Crisis Center</div>
+                        <div class="wf-charity-desc">Shelter, legal advocacy, and counseling for survivors of domestic violence and sexual assault.</div>
+                        <div class="wf-amount-row">
+                            <span class="wf-amount-label">Your gift: $</span>
+                            <input class="wf-amount-input" value="100" readonly>
+                        </div>
+                    </div>
+
+                    <div class="wf-charity-card">
+                        <div class="wf-charity-name">Wood River YMCA Youth Fund</div>
+                        <div class="wf-charity-desc">Scholarships so every kid can participate in YMCA programs regardless of family income.</div>
+                        <div class="wf-amount-row">
+                            <span class="wf-amount-label">Your gift: $</span>
+                            <input class="wf-amount-input" value="0" readonly>
+                        </div>
+                    </div>
+
+                    <div class="wf-charity-card">
+                        <div class="wf-charity-name">Community School Scholarships</div>
+                        <div class="wf-charity-desc">Need-based aid for Wood River Valley students attending The Community School.</div>
+                        <div class="wf-amount-row">
+                            <span class="wf-amount-label">Your gift: $</span>
+                            <input class="wf-amount-input" value="0" readonly>
+                        </div>
+                    </div>
+
+                    <div style="background:#f0f6fa; border-radius:4px; padding:5px 6px; font-size:9px; color:#555; margin-bottom:6px;">
+                        Total: <strong>$100</strong> &nbsp;·&nbsp; Minimum: $100 &nbsp;·&nbsp; <span style="color:#2D8B4E;">&#10003; Meets minimum</span>
+                    </div>
+
+                    <div class="wf-btn green">Choose Payment Method &rarr;</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">2A</span>Member sees all 3 charities. Default allocates full $100 to first charity. Member can redistribute freely. Total must be $100+.</div>
+        </div>
+
+        <div class="arrow">&#8594;</div>
+
+        <!-- Screen 2B: Contribute page scrolled -->
+        <div class="screen-card" style="width:220px;">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label">Screen 2B — Split Allocation Example</div>
+                <div class="phone-content tall">
+                    <div class="wf-header">Your Contribution</div>
+                    <div class="wf-subhead">Q1 2026 · Three presenting organizations</div>
+
+                    <div class="wf-charity-card" style="border-color: #2D8B4E;">
+                        <div class="wf-charity-name">Valley Crisis Center</div>
+                        <div class="wf-charity-desc">Shelter, legal advocacy, and counseling...</div>
+                        <div class="wf-amount-row">
+                            <span class="wf-amount-label">Your gift: $</span>
+                            <input class="wf-amount-input" value="50" readonly style="border-color:#2D8B4E;">
+                        </div>
+                    </div>
+
+                    <div class="wf-charity-card" style="border-color: #2D8B4E;">
+                        <div class="wf-charity-name">Wood River YMCA Youth Fund</div>
+                        <div class="wf-charity-desc">Scholarships so every kid can participate...</div>
+                        <div class="wf-amount-row">
+                            <span class="wf-amount-label">Your gift: $</span>
+                            <input class="wf-amount-input" value="50" readonly style="border-color:#2D8B4E;">
+                        </div>
+                    </div>
+
+                    <div class="wf-charity-card">
+                        <div class="wf-charity-name">Community School Scholarships</div>
+                        <div class="wf-charity-desc">Need-based aid for WRV students...</div>
+                        <div class="wf-amount-row">
+                            <span class="wf-amount-label">Your gift: $</span>
+                            <input class="wf-amount-input" value="0" readonly>
+                        </div>
+                    </div>
+
+                    <div style="background:#e8f5e9; border-radius:4px; padding:5px 6px; font-size:9px; color:#2D8B4E; margin-bottom:6px; font-weight:700;">
+                        Total: $100 &nbsp;·&nbsp; &#10003; Meets minimum
+                    </div>
+
+                    <div class="wf-btn green">Choose Payment Method &rarr;</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">2B</span>Example: member splits $50/$50 across two charities. Payment method selection happens once per charity they gave to.</div>
+            <div class="annotation">Key design: charities get equal visual treatment — same card size, same order randomized each quarter.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PHASE 3: Payment Method Selection                                   -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="flow-section">
+    <h2>Phase 3 — Payment Method Selection (once per charity receiving a gift)</h2>
+
+    <div class="storyboard-row">
+
+        <div class="screen-card" style="width:220px;">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label">Screen 3 — Choose Payment Method</div>
+                <div class="phone-content tall">
+                    <div class="wf-header">How would you like to give?</div>
+                    <div class="wf-subhead">Valley Crisis Center &nbsp;·&nbsp; $50</div>
+
+                    <div style="font-size:9px; font-weight:700; color:#2D8B4E; margin-bottom:4px;">Fee-free (100 cents to the cause)</div>
+
+                    <div class="wf-pay-option">
+                        <div class="wf-pay-name">Check</div>
+                        <span class="wf-badge badge-free">FREE</span>
+                        <div class="wf-radio selected"></div>
+                    </div>
+                    <div class="wf-pay-option">
+                        <div class="wf-pay-name">Zelle</div>
+                        <span class="wf-badge badge-free">FREE</span>
+                        <div class="wf-radio"></div>
+                    </div>
+                    <div class="wf-pay-option">
+                        <div class="wf-pay-name">ACH / Bank Transfer</div>
+                        <span class="wf-badge badge-free">FREE</span>
+                        <div class="wf-radio"></div>
+                    </div>
+                    <div class="wf-pay-option">
+                        <div class="wf-pay-name">Donor Advised Fund</div>
+                        <span class="wf-badge badge-free">FREE</span>
+                        <div class="wf-radio"></div>
+                    </div>
+                    <div class="wf-pay-option">
+                        <div class="wf-pay-name">IRA / QCD (age 70½+)</div>
+                        <span class="wf-badge badge-free">FREE</span>
+                        <div class="wf-radio"></div>
+                    </div>
+
+                    <hr class="wf-divider">
+                    <div style="font-size:9px; font-weight:700; color:#E8734A; margin-bottom:4px;">Convenient (small processing fee)</div>
+
+                    <div class="wf-pay-option">
+                        <div class="wf-pay-name">Online / Credit Card</div>
+                        <span class="wf-badge badge-fee">2–3%</span>
+                        <div class="wf-radio"></div>
+                    </div>
+                    <div class="wf-pay-option">
+                        <div class="wf-pay-name">Venmo</div>
+                        <span class="wf-badge badge-fee">~2%</span>
+                        <div class="wf-radio"></div>
+                    </div>
+                    <div class="wf-pay-option">
+                        <div class="wf-pay-name">PayPal</div>
+                        <span class="wf-badge badge-fee">~2%</span>
+                        <div class="wf-radio"></div>
+                    </div>
+
+                    <div class="wf-btn" style="margin-top:8px;">Continue &rarr;</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">3</span>Member picks payment method for this charity. Fee-free methods listed first and grouped visually. Each charity gets its own method selection.</div>
+            <div class="annotation">If member gave to 2 charities, they complete this screen twice — once per charity.</div>
+        </div>
+
+        <div class="arrow branch">&#8594;</div>
+
+        <!-- Branch label -->
+        <div style="padding-top: 60px; display:flex; flex-direction:column; gap:24px; align-items:center;">
+            <div class="branch-label">branches by method</div>
+            <div style="font-size: 20px; color: #E8734A;">&#9660;</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PHASE 4: Method Completion Screens                                  -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="flow-section">
+    <h2>Phase 4 — Method Completion Screens (one per path)</h2>
+
+    <div class="storyboard-row" style="flex-wrap:wrap; gap:12px;">
+
+        <!-- Path A: Online / Credit card -->
+        <div class="screen-card">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label action">Path A — Online / Card</div>
+                <div class="phone-content">
+                    <div class="wf-header">Donate Online</div>
+                    <div class="wf-subhead">Valley Crisis Center</div>
+                    <div class="wf-body-text">Tap the button to open Valley Crisis Center's secure donation page. Your $50 will be pre-filled where possible.</div>
+                    <div class="wf-btn green">Open Donation Page &rarr;</div>
+                    <hr class="wf-divider">
+                    <div class="wf-body-text" style="color:#888;">Note: A 2–3% processing fee applies. The charity receives approximately $48.50 of your $50 gift.</div>
+                    <div class="wf-body-text" style="color:#2D8B4E;">You'll receive an automatic email receipt.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">4A</span>Opens charity's donation page in browser. Fastest path for most members.</div>
+        </div>
+
+        <!-- Path B: Zelle -->
+        <div class="screen-card">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label action">Path B — Zelle</div>
+                <div class="phone-content">
+                    <div class="wf-header">Pay via Zelle</div>
+                    <div class="wf-subhead">Valley Crisis Center · $50</div>
+
+                    <div class="wf-step">
+                        <div class="wf-step-num">1</div>
+                        <div class="wf-step-text">Open your banking app and tap Zelle or Send Money.</div>
+                    </div>
+                    <div class="wf-step">
+                        <div class="wf-step-num">2</div>
+                        <div class="wf-step-text">Send to:</div>
+                    </div>
+                    <div class="wf-field filled" style="font-size:9px; font-weight:700; justify-content:space-between;">
+                        <span>donate@valleycrisis.org</span>
+                        <span style="color:#2E86AB; cursor:pointer;">Copy</span>
+                    </div>
+                    <div class="wf-step">
+                        <div class="wf-step-num">3</div>
+                        <div class="wf-step-text">Enter amount: $50</div>
+                    </div>
+                    <div class="wf-step">
+                        <div class="wf-step-num">4</div>
+                        <div class="wf-step-text">In the memo field, type: <strong>100MWC</strong></div>
+                    </div>
+                    <div class="wf-body-text" style="color:#888; margin-top:4px;">Request a receipt from the charity. Your bank statement alone is not sufficient for tax purposes.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">4B</span>Fee-free. Copy button for Zelle address. Memo field instruction prominent.</div>
+        </div>
+
+        <!-- Path C: DAF -->
+        <div class="screen-card">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label action">Path C — DAF Grant</div>
+                <div class="phone-content">
+                    <div class="wf-header">Give with Your DAF</div>
+                    <div class="wf-subhead">Donor Advised Fund · $50</div>
+                    <div class="wf-body-text">Select your DAF sponsor to open a pre-filled grant recommendation:</div>
+
+                    <div style="display:flex; flex-direction:column; gap:5px; margin-bottom:8px;">
+                        <div class="wf-btn ghost">Fidelity Charitable &rarr;</div>
+                        <div class="wf-btn ghost">Schwab Charitable &rarr;</div>
+                        <div class="wf-btn ghost">Vanguard Charitable &rarr;</div>
+                        <div class="wf-btn ghost">Community Foundation &rarr;</div>
+                        <div class="wf-btn ghost">Other sponsor &rarr;</div>
+                    </div>
+
+                    <div class="wf-body-text" style="color:#888; font-size:8px;">
+                        Charity: Valley Crisis Center<br>
+                        EIN: 82-XXXXXXX<br>
+                        Purpose field: "100 Men Who Care"
+                    </div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">4C</span>DAF Direct integration. Charity EIN and purpose field pre-filled. Grant takes 1–3 weeks to process.</div>
+            <div class="annotation">DAF donors appear on matching list so charity can identify the institutional check.</div>
+        </div>
+
+        <!-- Path D: QCD -->
+        <div class="screen-card">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label action">Path D — QCD (age 70½+)</div>
+                <div class="phone-content">
+                    <div class="wf-header">IRA Qualified Charitable Distribution</div>
+                    <div class="wf-subhead">Valley Crisis Center · $50</div>
+                    <div class="wf-body-text">Two options depending on your IRA:</div>
+
+                    <div class="wf-label">Option 1 — IRA Checkbook</div>
+                    <div class="wf-body-text" style="color:#555;">Download a pre-filled check slip. Copy onto your IRA checkbook and hand to Coordinator or mail directly.</div>
+                    <div class="wf-btn ghost" style="font-size:9px; margin-bottom:8px;">Download Check Slip (PDF)</div>
+
+                    <div class="wf-label">Option 2 — Custodian Letter</div>
+                    <div class="wf-body-text" style="color:#555;">Download a letter of instruction to send or email to Fidelity, Schwab, Vanguard, etc.</div>
+                    <div class="wf-btn ghost" style="font-size:9px;">Download Instruction Letter (PDF)</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">4D</span>QCD excludes amount from taxable income — more valuable than deduction for many members 70½+.</div>
+            <div class="annotation">Custodian checks often arrive without member name. Matching list bridges the gap.</div>
+        </div>
+
+        <!-- Path E: Check -->
+        <div class="screen-card">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label action">Path E — Check</div>
+                <div class="phone-content">
+                    <div class="wf-header">Pay by Check</div>
+                    <div class="wf-subhead">Valley Crisis Center · $50</div>
+
+                    <div class="wf-step">
+                        <div class="wf-step-num">1</div>
+                        <div class="wf-step-text">Make check payable to: <strong>Valley Crisis Center</strong></div>
+                    </div>
+                    <div class="wf-step">
+                        <div class="wf-step-num">2</div>
+                        <div class="wf-step-text">Write in memo: <strong>100 Men Who Care</strong></div>
+                    </div>
+                    <div class="wf-step">
+                        <div class="wf-step-num">3</div>
+                        <div class="wf-step-text">Deliver by:</div>
+                    </div>
+                    <div style="background:#f5f5f5; border-radius:4px; padding:5px; font-size:9px; color:#444; margin-bottom:6px;">
+                        <strong>Option A:</strong> Mail directly to charity<br>
+                        123 Valley Road, Hailey ID 83333<br><br>
+                        <strong>Option B:</strong> Give to Coordinator at meeting<br>
+                        <span style="color:#888;">(will be photographed &amp; delivered within 7 days)</span>
+                    </div>
+                    <div class="wf-body-text" style="color:#2D8B4E;">Zero processing fees. 100 cents on the dollar.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">4E</span>Check to Coordinator: photographed for audit trail, VOID watermark applied to digital copy, delivered within 7 days.</div>
+        </div>
+
+        <!-- Path F: Venmo/PayPal -->
+        <div class="screen-card">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label action">Path F — Venmo / PayPal</div>
+                <div class="phone-content">
+                    <div class="wf-header">Pay via Venmo or PayPal</div>
+                    <div class="wf-subhead">Valley Crisis Center · $50</div>
+
+                    <div class="wf-label">Venmo</div>
+                    <div class="wf-body-text">Search: <strong>@ValleyCrisisCenter</strong></div>
+                    <div class="wf-body-text" style="color:#888; font-size:8px;">Look for blue checkmark — verified nonprofit.</div>
+                    <div class="wf-body-text">Include <strong>100MWC</strong> in the note.</div>
+                    <div class="wf-btn ghost" style="margin-bottom:8px;">Open Venmo &rarr;</div>
+
+                    <hr class="wf-divider">
+
+                    <div class="wf-label">PayPal</div>
+                    <div class="wf-body-text">Send as a donation (not a personal payment).</div>
+                    <div class="wf-btn ghost">Open PayPal Giving Fund &rarr;</div>
+
+                    <div class="wf-body-text" style="color:#E8734A; margin-top:6px; font-size:8px;">Note: ~2% processing fee applies. Charity receives ~$49 of your $50.</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">4F</span>Automatic tax receipt. Blue checkmark verification instruction prevents sending to wrong account.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PHASE 5: Confirm + "I've Donated"                                   -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="flow-section">
+    <h2>Phase 5 — "I've Donated" Confirmation (all paths converge here)</h2>
+
+    <div class="storyboard-row">
+
+        <!-- Screen 5: I've Donated form -->
+        <div class="screen-card" style="width:220px;">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label">Screen 5 — I've Donated Form</div>
+                <div class="phone-content tall">
+                    <div class="wf-header">Confirm Your Contribution</div>
+                    <div class="wf-subhead">Honor system — takes 30 seconds</div>
+
+                    <div class="wf-label">Your name (optional but helpful)</div>
+                    <div class="wf-field">Ed Forman</div>
+
+                    <div class="wf-label">Valley Crisis Center — $50</div>
+                    <div style="font-size:9px; color:#666; margin-bottom:4px;">Payment method used:</div>
+                    <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px;">
+                        <div style="background:#e3f2fd; color:#1565c0; font-size:8px; padding:2px 6px; border-radius:3px; cursor:pointer;">Check</div>
+                        <div style="background:#1B3A5C; color:white; font-size:8px; padding:2px 6px; border-radius:3px;">Zelle</div>
+                        <div style="background:#e3f2fd; color:#1565c0; font-size:8px; padding:2px 6px; border-radius:3px; cursor:pointer;">Online</div>
+                        <div style="background:#e3f2fd; color:#1565c0; font-size:8px; padding:2px 6px; border-radius:3px; cursor:pointer;">DAF</div>
+                        <div style="background:#e3f2fd; color:#1565c0; font-size:8px; padding:2px 6px; border-radius:3px; cursor:pointer;">QCD</div>
+                    </div>
+
+                    <div class="wf-label">Wood River YMCA — $50</div>
+                    <div style="font-size:9px; color:#666; margin-bottom:4px;">Payment method used:</div>
+                    <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px;">
+                        <div style="background:#e3f2fd; color:#1565c0; font-size:8px; padding:2px 6px; border-radius:3px; cursor:pointer;">Check</div>
+                        <div style="background:#e3f2fd; color:#1565c0; font-size:8px; padding:2px 6px; border-radius:3px; cursor:pointer;">Zelle</div>
+                        <div style="background:#e3f2fd; color:#1565c0; font-size:8px; padding:2px 6px; border-radius:3px; cursor:pointer;">Online</div>
+                        <div style="background:#1B3A5C; color:white; font-size:8px; padding:2px 6px; border-radius:3px;">DAF</div>
+                        <div style="background:#e3f2fd; color:#1565c0; font-size:8px; padding:2px 6px; border-radius:3px; cursor:pointer;">QCD</div>
+                    </div>
+
+                    <!-- DAF/QCD matching fields appear if those methods selected -->
+                    <div style="background:#fff9e6; border:1px solid #f9c740; border-radius:4px; padding:5px 6px; margin-bottom:6px;">
+                        <div style="font-size:9px; font-weight:700; color:#8a6d00; margin-bottom:3px;">DAF identified — for matching list:</div>
+                        <div style="font-size:8px; color:#666; margin-bottom:3px;">DAF Sponsor:</div>
+                        <div class="wf-field" style="height:18px; font-size:8px;">Fidelity Charitable</div>
+                        <div style="font-size:8px; color:#666; margin-bottom:2px;">Approx. send date:</div>
+                        <div class="wf-field" style="height:18px; font-size:8px;">Today</div>
+                    </div>
+
+                    <div class="wf-btn green" style="font-size:10px; padding:7px;">Submit &rarr;</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">5</span>"I've Donated" form. Methods pre-populated from prior screen. DAF/QCD fields expand only if those methods were selected — feeds the matching list.</div>
+            <div class="annotation">Form is honor system, same as everything else in the group. Gives Coordinator real participation data.</div>
+        </div>
+
+        <div class="arrow">&#8594;</div>
+
+        <!-- Screen 6: Thank you / confirmation -->
+        <div class="screen-card">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label end">Screen 6 — Confirmation</div>
+                <div class="phone-content">
+                    <div class="wf-check-circle">&#10003;</div>
+                    <div style="text-align:center; font-size:12px; font-weight:700; color:#1B3A5C; margin-bottom:4px;">Thank You!</div>
+                    <div style="text-align:center; font-size:9px; color:#666; margin-bottom:10px;">Your contribution has been logged.</div>
+
+                    <div style="background:#f0f6fa; border-radius:4px; padding:8px; font-size:9px; color:#444; margin-bottom:8px;">
+                        <div style="font-weight:700; margin-bottom:4px; color:#1B3A5C;">Your Q1 2026 Summary</div>
+                        <div>Valley Crisis Center &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $50 (Zelle)</div>
+                        <div>Wood River YMCA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $50 (DAF)</div>
+                        <div style="margin-top:4px; padding-top:4px; border-top:1px solid #ddd; font-weight:700;">Total contributed: $100</div>
+                    </div>
+
+                    <div style="font-size:8px; color:#888; margin-bottom:6px; line-height:1.4;">
+                        Tax receipts: Valley Crisis Center will email you. For your DAF gift, Fidelity Charitable will document the grant.
+                    </div>
+
+                    <div class="wf-btn ghost" style="font-size:9px;">Back to 100MWC Site</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">6</span>Confirmation shows per-charity summary, method used, and tax receipt guidance. Clean end state.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PHASE 6: Coordinator + Charity Back-End                             -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="flow-section">
+    <h2>Phase 6 — Back-End: Coordinator and Charity (runs in parallel)</h2>
+
+    <div class="storyboard-row">
+
+        <!-- Coordinator dashboard -->
+        <div class="screen-card" style="width:240px;">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label">Coordinator View — Participation Tracker</div>
+                <div class="phone-content tall">
+                    <div class="wf-header">Q1 2026 Tracker</div>
+                    <div class="wf-subhead" style="text-align:left; padding:0 0 6px 0; border-bottom:1px solid #eee;">Confirmed donations · 11 days post-meeting</div>
+
+                    <div style="display:flex; justify-content:space-between; font-size:9px; margin-bottom:8px; margin-top:6px;">
+                        <div style="text-align:center;">
+                            <div style="font-size:18px; font-weight:700; color:#1B3A5C;">74</div>
+                            <div style="color:#888;">confirmed</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="font-size:18px; font-weight:700; color:#E8734A;">28</div>
+                            <div style="color:#888;">pending</div>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="font-size:18px; font-weight:700; color:#2D8B4E;">$8,200+</div>
+                            <div style="color:#888;">estimated</div>
+                        </div>
+                    </div>
+
+                    <div style="font-size:9px; font-weight:700; color:#1B3A5C; margin-bottom:4px;">Payment methods used</div>
+                    <div style="font-size:9px; color:#444; margin-bottom:2px;">Check &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 18 (24%)</div>
+                    <div style="font-size:9px; color:#444; margin-bottom:2px;">Zelle &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 22 (30%)</div>
+                    <div style="font-size:9px; color:#444; margin-bottom:2px;">Online/card &nbsp;&nbsp; 19 (26%)</div>
+                    <div style="font-size:9px; color:#444; margin-bottom:2px;">DAF &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9 (12%)</div>
+                    <div style="font-size:9px; color:#444; margin-bottom:8px;">QCD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6 (8%)</div>
+
+                    <div class="wf-btn orange" style="font-size:9px; margin-bottom:5px;">Send 2-Week Reminder</div>
+                    <div class="wf-btn ghost" style="font-size:9px;">Export Matching List (DAF/QCD)</div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">C1</span>Coordinator sees live participation data from "I've Donated" form. Sends reminder to non-confirming members at 2-week mark. Exports matching list for charities.</div>
+        </div>
+
+        <div class="arrow">&#8594;</div>
+
+        <!-- Matching list -->
+        <div class="screen-card" style="width:220px;">
+            <div class="phone">
+                <div class="phone-notch"></div>
+                <div class="phone-status"><span>9:41</span><span>100%</span></div>
+                <div class="screen-label">Charity Receives — Matching List</div>
+                <div class="phone-content tall">
+                    <div class="wf-header">100MWC Q1 2026</div>
+                    <div class="wf-subhead">Valley Crisis Center · Matching List</div>
+                    <div style="font-size:8px; color:#666; margin-bottom:8px; line-height:1.4;">Use this list to connect institutional gifts (Fidelity Charitable, Schwab, etc.) to your individual donors.</div>
+
+                    <table style="width:100%; border-collapse:collapse; font-size:8px;">
+                        <thead>
+                            <tr style="background:#1B3A5C; color:white;">
+                                <th style="padding:3px 4px; text-align:left;">Donor</th>
+                                <th style="padding:3px 4px; text-align:left;">Method</th>
+                                <th style="padding:3px 4px; text-align:left;">Sponsor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid #eee;">
+                                <td style="padding:3px 4px;">Ed Forman</td>
+                                <td style="padding:3px 4px;">Zelle</td>
+                                <td style="padding:3px 4px;">—</td>
+                            </tr>
+                            <tr style="background:#f9f9f9; border-bottom:1px solid #eee;">
+                                <td style="padding:3px 4px;">Jane Smith</td>
+                                <td style="padding:3px 4px;">DAF</td>
+                                <td style="padding:3px 4px;">Fidelity</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #eee;">
+                                <td style="padding:3px 4px;">Bob Miller</td>
+                                <td style="padding:3px 4px;">QCD</td>
+                                <td style="padding:3px 4px;">Schwab</td>
+                            </tr>
+                            <tr style="background:#f9f9f9;">
+                                <td style="padding:3px 4px;">...</td>
+                                <td style="padding:3px 4px;">...</td>
+                                <td style="padding:3px 4px;">...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top:8px; font-size:8px; color:#666; line-height:1.4;">
+                        DAF check from Fidelity Charitable will name Jane Smith as donor. QCD check from Schwab will name Bob Miller. Match and send personalized acknowledgment letters to each.
+                    </div>
+                </div>
+            </div>
+            <div class="card-caption"><span class="card-num">C2</span>Matching list lets charity's bookkeeper identify DAF and QCD institutional checks and send personalized tax acknowledgment letters to each member.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- Flow Summary                                                         -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div class="flow-section" style="padding-bottom: 40px;">
+    <h2>Complete Flow Summary</h2>
+
+    <div style="background:white; border-radius:8px; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.08); max-width:800px;">
+        <div style="display:grid; grid-template-columns:auto 1fr; gap:8px 16px; font-size:12px; align-items:baseline;">
+
+            <div style="font-weight:700; color:#6c757d; text-transform:uppercase; font-size:10px; letter-spacing:.5px;">Entry</div>
+            <div>At-meeting QR scan  <em>or</em>  Post-meeting email button/QR (Entry B also triggers 2-week follow-up if no confirmation logged)</div>
+
+            <div style="font-weight:700; color:#1B3A5C; text-transform:uppercase; font-size:10px; letter-spacing:.5px;">Screen 2</div>
+            <div>Contribute Page — member sees all 3 charities, enters amounts totaling $100+ (default: full $100 to first charity)</div>
+
+            <div style="font-weight:700; color:#1B3A5C; text-transform:uppercase; font-size:10px; letter-spacing:.5px;">Screen 3</div>
+            <div>Payment Method Selection — repeated once per charity that received a gift; fee-free methods listed first</div>
+
+            <div style="font-weight:700; color:#2D8B4E; text-transform:uppercase; font-size:10px; letter-spacing:.5px;">Screen 4</div>
+            <div>Method completion:
+                <span style="background:#e8f5e9; color:#2D8B4E; padding:1px 5px; border-radius:3px; font-size:10px; margin:0 2px;">4A Online</span>
+                <span style="background:#e8f5e9; color:#2D8B4E; padding:1px 5px; border-radius:3px; font-size:10px; margin:0 2px;">4B Zelle</span>
+                <span style="background:#e8f5e9; color:#2D8B4E; padding:1px 5px; border-radius:3px; font-size:10px; margin:0 2px;">4C DAF</span>
+                <span style="background:#e8f5e9; color:#2D8B4E; padding:1px 5px; border-radius:3px; font-size:10px; margin:0 2px;">4D QCD</span>
+                <span style="background:#e8f5e9; color:#2D8B4E; padding:1px 5px; border-radius:3px; font-size:10px; margin:0 2px;">4E Check</span>
+                <span style="background:#fff3e0; color:#E8734A; padding:1px 5px; border-radius:3px; font-size:10px; margin:0 2px;">4F Venmo/PayPal</span>
+            </div>
+
+            <div style="font-weight:700; color:#1B3A5C; text-transform:uppercase; font-size:10px; letter-spacing:.5px;">Screen 5</div>
+            <div>"I've Donated" form — confirms methods per charity; DAF/QCD fields expand to capture sponsor name for matching list</div>
+
+            <div style="font-weight:700; color:#2E86AB; text-transform:uppercase; font-size:10px; letter-spacing:.5px;">Screen 6</div>
+            <div>Thank-you confirmation with per-charity summary and tax receipt guidance</div>
+
+            <div style="font-weight:700; color:#1B3A5C; text-transform:uppercase; font-size:10px; letter-spacing:.5px;">Back-end</div>
+            <div>Coordinator dashboard shows live participation; exports matching list to each charity for DAF/QCD attribution</div>
+        </div>
+
+        <hr style="margin: 20px 0; border:none; border-top:1px solid #eee;">
+
+        <div style="font-size:11px; color:#888; line-height:1.6;">
+            <strong>Design constraints honored:</strong>
+            No money passes through the Group &nbsp;·&nbsp;
+            All three charities receive equal visual treatment &nbsp;·&nbsp;
+            Fee-free methods prominent &nbsp;·&nbsp;
+            Honor system throughout &nbsp;·&nbsp;
+            Works for check writers, Zelle senders, DAF donors, and QCD retirees &nbsp;·&nbsp;
+            Coordinator workload: ~30 min/quarter
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
