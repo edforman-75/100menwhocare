@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Research Plan - 100 Men Who Care Wood River Valley</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 60px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #1B3A5C 0%, #2E86AB 100%);
+            color: white;
+            padding: 40px;
+            margin: -60px -60px 40px -60px;
+        }
+
+        .header h1 { font-size: 30px; margin-bottom: 10px; }
+        .header .subtitle { font-size: 16px; opacity: 0.9; }
+        .header .meta { font-size: 13px; opacity: 0.75; margin-top: 10px; }
+
+        .status-bar {
+            background: #fff3e0;
+            border-left: 4px solid #E8734A;
+            padding: 16px 20px;
+            margin-bottom: 40px;
+            font-size: 14px;
+            color: #555;
+        }
+        .status-bar strong { color: #E8734A; }
+
+        section { margin-bottom: 44px; }
+
+        h2 {
+            font-size: 22px;
+            color: #1B3A5C;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        h3 {
+            font-size: 16px;
+            color: #2E86AB;
+            margin: 24px 0 12px;
+        }
+
+        h4 {
+            font-size: 14px;
+            color: #1B3A5C;
+            margin: 20px 0 8px;
+            font-weight: 700;
+        }
+
+        p { margin-bottom: 14px; }
+
+        ul, ol {
+            padding-left: 22px;
+            margin-bottom: 16px;
+        }
+
+        li { margin-bottom: 8px; line-height: 1.6; }
+
+        .goal-box {
+            background: #f0f6fa;
+            border-left: 4px solid #2E86AB;
+            padding: 18px 20px;
+            margin: 20px 0;
+        }
+
+        .goal-box strong { color: #1B3A5C; }
+
+        .persona-block {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .persona-header {
+            padding: 14px 20px;
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .persona-member   .persona-header { background: #1B3A5C; color: white; }
+        .persona-coord    .persona-header { background: #2D5016; color: white; }
+        .persona-ed       .persona-header { background: #4A1E6B; color: white; }
+
+        .persona-body { padding: 20px; }
+
+        .persona-meta {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 14px;
+            font-style: italic;
+        }
+
+        .q-list { list-style: none; padding: 0; margin: 0; }
+        .q-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #333;
+        }
+        .q-list li:last-child { border-bottom: none; }
+        .q-list li::before {
+            content: "Q: ";
+            font-weight: 700;
+            color: #2E86AB;
+        }
+
+        .q-list.coord li::before { color: #2D8B4E; }
+        .q-list.ed li::before { color: #9b59b6; }
+
+        .probe {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+            padding-left: 18px;
+            line-height: 1.4;
+        }
+
+        .criteria-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .criteria-table th {
+            background: #1B3A5C;
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        .criteria-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        .criteria-table tr:last-child td { border-bottom: none; }
+        .criteria-table tr:nth-child(even) td { background: #f8f9fa; }
+
+        .go-nogo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .go-box {
+            background: #e8f5e9;
+            border-left: 4px solid #2D8B4E;
+            padding: 16px;
+            border-radius: 4px;
+        }
+
+        .nogo-box {
+            background: #fff3e0;
+            border-left: 4px solid #E8734A;
+            padding: 16px;
+            border-radius: 4px;
+        }
+
+        .go-box strong   { color: #2D8B4E; display: block; margin-bottom: 8px; }
+        .nogo-box strong { color: #E8734A; display: block; margin-bottom: 8px; }
+
+        .go-box ul, .nogo-box ul { margin: 0; padding-left: 18px; font-size: 13px; }
+        .go-box li, .nogo-box li { margin-bottom: 6px; }
+
+        .timeline-row {
+            display: flex;
+            gap: 0;
+            margin: 20px 0;
+        }
+
+        .timeline-step {
+            flex: 1;
+            padding: 14px 12px;
+            text-align: center;
+            font-size: 12px;
+            border-right: 1px solid white;
+            position: relative;
+        }
+
+        .timeline-step:last-child { border-right: none; }
+        .ts-1 { background: #1B3A5C; color: white; }
+        .ts-2 { background: #2E86AB; color: white; }
+        .ts-3 { background: #2D8B4E; color: white; }
+        .ts-4 { background: #E8734A; color: white; }
+        .ts-5 { background: #6c3483; color: white; }
+
+        .timeline-step .ts-week { font-size: 10px; opacity: 0.8; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .5px; }
+        .timeline-step .ts-label { font-weight: 700; font-size: 12px; }
+
+        .note-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .decision-badge {
+            display: inline-block;
+            background: #2D8B4E;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .scope-out {
+            background: #fafafa;
+            border-left: 3px solid #ccc;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .scope-out strong { color: #555; }
+
+        footer-quote {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+            padding: 30px;
+            margin-top: 40px;
+            border-top: 2px solid #e0e0e0;
+            display: block;
+            font-size: 14px;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; padding: 40px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>User Research Plan</h1>
+        <div class="subtitle">100 Men Who Care Wood River Valley</div>
+        <div class="subtitle">Payment Simplification &amp; Member Account System</div>
+        <div class="meta">Draft &mdash; February 2026</div>
+    </div>
+
+    <div class="status-bar">
+        <strong>Status: Draft.</strong> This plan should be reviewed and approved before research begins. Recruitment, scheduling, and interview guides may be updated based on feedback from the leadership board.
+    </div>
+
+    <section>
+        <h2>Purpose</h2>
+        <p>The <a href="strategic-proposal.html">Payment Simplification Solution Proposal</a> identifies a set of hypothesized problems across three stakeholder groups — members, the coordinator, and presenting charities. Before building anything, we need to validate those hypotheses through direct conversations with real people in each role.</p>
+        <p>This plan defines who we talk to, what we ask, what we're trying to learn, and what evidence we need to justify moving forward with implementation.</p>
+
+        <div class="goal-box">
+            <strong>Primary research goal:</strong> Determine whether the payment friction, DAF/QCD confusion, and tracking gaps are significant enough — and widespread enough — to justify building a member account system and coordinator dashboard.
+        </div>
+
+        <div class="goal-box">
+            <strong>Secondary goal:</strong> Surface any needs, constraints, or failure modes that the solution proposal did not anticipate.
+        </div>
+    </section>
+
+    <section>
+        <h2>What We Already Know (Decisions Made)</h2>
+        <p>The following are not open research questions — they have been decided and should not be re-litigated during research unless strong contradictory evidence emerges:</p>
+        <ul>
+            <li><strong>User accounts are required.</strong> <span class="decision-badge">DECIDED</span> The system will require member accounts (name, email, password) to support persistent payment profiles, verified participation tracking, good-standing enforcement, and role-based coordinator access.</li>
+            <li><strong>All contributions go directly from member to charity.</strong> 100MWC is not a financial intermediary and will not handle or hold funds.</li>
+            <li><strong>The system tracks self-reported contributions.</strong> Members confirm their donation via an "I've Donated" form. The system cannot verify third-party payments (Zelle, DAF, QCD) — nor does it need to.</li>
+            <li><strong>The coordinator dashboard must be private.</strong> Member contribution data is not publicly accessible. The coordinator sees a different view than members, controlled by role-based login.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Research Questions</h2>
+        <p>These are the questions we cannot answer without talking to participants. Each maps to one or more hypotheses in the solution proposal.</p>
+
+        <h3>For Members</h3>
+        <ul>
+            <li>How do members currently decide which payment method to use? What influences that choice?</li>
+            <li>How many members use DAF or QCD today? What percentage default to check because it is "easier"?</li>
+            <li>What is the actual time from meeting to completed payment — and at what points do people forget or defer?</li>
+            <li>Would members create an account and set up a payment profile if onboarding takes under 5 minutes?</li>
+            <li>What is the appetite for a mobile-first Contribute page vs. the current email-with-instructions approach?</li>
+        </ul>
+
+        <h3>For the Coordinator</h3>
+        <ul>
+            <li>How many hours per quarter does the current process take, broken down by task?</li>
+            <li>What data does the coordinator currently collect, and what data does the coordinator wish they had?</li>
+            <li>What is the biggest single pain point in the current workflow?</li>
+            <li>What does the ideal participation tracker look like — what fields, filters, and export formats are needed?</li>
+            <li>What platform constraints exist (budget, technical support, volunteer time for setup)?</li>
+        </ul>
+
+        <h3>For Presenting Charities (Executive Directors)</h3>
+        <ul>
+            <li>How many institutional checks (from Fidelity Charitable, Schwab, IRA custodians) arrive that cannot be identified?</li>
+            <li>How much staff time does processing a typical 100MWC gift batch require?</li>
+            <li>Would receiving a matching list (name + email + expected payment + charity allocation) materially reduce workload?</li>
+            <li>Do they currently have or want a channel for ongoing follow-up with individual 100MWC donors?</li>
+            <li>What is their DAF Direct registration status, and what would motivate them to register if they haven't?</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Participant Criteria &amp; Targets</h2>
+
+        <div class="persona-block persona-member">
+            <div class="persona-header">Members &mdash; Target: 6&ndash;8 interviews</div>
+            <div class="persona-body">
+                <p class="persona-meta">Recruit for diversity across giving method, tenure, and engagement level. At least one member who uses DAF, one who uses QCD, two who give by check.</p>
+                <table class="criteria-table">
+                    <thead>
+                        <tr><th>Criteria</th><th>Target</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Current member in good standing</td><td>All</td></tr>
+                        <tr><td>Primarily uses check</td><td>2&ndash;3</td></tr>
+                        <tr><td>Uses or has tried DAF</td><td>1&ndash;2</td></tr>
+                        <tr><td>Uses or is eligible for QCD (age 70½+)</td><td>1&ndash;2</td></tr>
+                        <tr><td>Joined within last 12 months</td><td>1&ndash;2</td></tr>
+                        <tr><td>Member for 5+ years</td><td>1&ndash;2</td></tr>
+                        <tr><td>Missed at least one quarterly contribution</td><td>1</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="persona-block persona-coord">
+            <div class="persona-header">Coordinator &mdash; Target: 1 interview (Marty)</div>
+            <div class="persona-body">
+                <p class="persona-meta">Single participant. Allow 60 minutes. Walk the full quarterly process end to end. Shadow a real cycle if timing allows.</p>
+                <table class="criteria-table">
+                    <thead>
+                        <tr><th>Criteria</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Current Communications Coordinator</td><td>Marty Lyon</td></tr>
+                        <tr><td>Has run at least 2 full quarterly cycles</td><td>Confirmed</td></tr>
+                        <tr><td>Willing to share current process documentation (if any)</td><td>Ask in advance</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="persona-block persona-ed">
+            <div class="persona-header">Executive Directors (Recipient Charities) &mdash; Target: 3 interviews</div>
+            <div class="persona-body">
+                <p class="persona-meta">Recruit from recent presenting organizations (within last 2 years). At least one that received DAF or QCD gifts; at least one that had difficulty identifying institutional checks.</p>
+                <table class="criteria-table">
+                    <thead>
+                        <tr><th>Criteria</th><th>Target</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Presented at 100MWC within last 24 months</td><td>All</td></tr>
+                        <tr><td>Received DAF or QCD gifts (confirmed or likely)</td><td>1&ndash;2</td></tr>
+                        <tr><td>Small staff (1&ndash;10) — felt the administrative load</td><td>2</td></tr>
+                        <tr><td>Has or wants ongoing relationship with 100MWC donors</td><td>All</td></tr>
+                        <tr><td>Not yet registered with DAF Direct (Fidelity/Schwab)</td><td>At least 1</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Interview Guides</h2>
+
+        <div class="persona-block persona-member">
+            <div class="persona-header">Member Interview Guide — 30&ndash;40 minutes</div>
+            <div class="persona-body">
+                <h4>Opening (5 min)</h4>
+                <p>Introduce the purpose: we are considering improvements to how 100MWC handles payments and are talking to members to understand their real experience. There are no right or wrong answers. We are not testing you — we are testing the process.</p>
+
+                <h4>Section 1: Current payment experience</h4>
+                <ul class="q-list">
+                    <li>Walk me through how you made your last quarterly contribution. Start from when the meeting ended.
+                        <div class="probe">Probe: How long did it take? At what point did you actually send the money?</div>
+                    </li>
+                    <li>What payment method do you use? Why that one?
+                        <div class="probe">Probe: Have you ever tried a different method? What happened?</div>
+                    </li>
+                    <li>Have you ever missed or delayed a contribution? What got in the way?</li>
+                    <li>How do you decide how to split your $100 across the three charities?</li>
+                </ul>
+
+                <h4>Section 2: DAF / QCD awareness</h4>
+                <ul class="q-list">
+                    <li>Do you have a Donor Advised Fund? [If yes] Have you used it for 100MWC? Why or why not?
+                        <div class="probe">If no: What has stopped you? What would make it easier?</div>
+                    </li>
+                    <li>Are you familiar with Qualified Charitable Distributions from an IRA? [If age 70½+] Do you use them? Have you used them for 100MWC?</li>
+                    <li>If contributing via DAF or QCD were as easy as paying by credit card — same number of steps — would you do it? How much would you give?</li>
+                </ul>
+
+                <h4>Section 3: Reaction to proposed solution</h4>
+                <p>Show the prototype (demo.html) — walk through the Contribute page, payment method selection, and "I've Donated" confirmation.</p>
+                <ul class="q-list">
+                    <li>What is your first reaction to this?</li>
+                    <li>Is there anything here that would make you more likely to contribute promptly after the meeting?</li>
+                    <li>We are planning to create member accounts so you can save your payment preferences. You would set this up once and it would pre-fill each quarter. How do you feel about creating an account?
+                        <div class="probe">Probe: What would you need to trust that this is secure?</div>
+                    </li>
+                    <li>What would make you not use this system?</li>
+                </ul>
+
+                <h4>Closing</h4>
+                <ul class="q-list">
+                    <li>Is there anything about how 100MWC handles payments that frustrates you that I haven't asked about?</li>
+                    <li>What one thing would most improve your experience as a member?</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="persona-block persona-coord">
+            <div class="persona-header">Coordinator Interview Guide — 60 minutes</div>
+            <div class="persona-body">
+                <h4>Opening (5 min)</h4>
+                <p>We are documenting and potentially improving the quarterly coordination process. This interview is about your real workflow — not the ideal version. Please be candid about what is hard, tedious, or unclear.</p>
+
+                <h4>Section 1: Quarterly cycle walkthrough</h4>
+                <ul class="q-list coord">
+                    <li>Walk me through exactly what you do from the day after the meeting to 30 days later. Every step.
+                        <div class="probe">For each step: How long does this take? How do you currently track it? What could go wrong?</div>
+                    </li>
+                    <li>Where does time go? What takes longer than it should?</li>
+                    <li>What do you do when a member doesn't respond to the two-week reminder?</li>
+                    <li>How do you currently generate the matching list for charities? Walk me through that process.</li>
+                </ul>
+
+                <h4>Section 2: Data and tracking</h4>
+                <ul class="q-list coord">
+                    <li>What data do you currently collect about participation? Show me, if you can.
+                        <div class="probe">Probe: How accurate is it? What gaps exist?</div>
+                    </li>
+                    <li>What data do you wish you had but don't?</li>
+                    <li>How do you determine whether a member is in good standing?</li>
+                    <li>If you had a dashboard showing confirmed contributors vs. non-responders in real time, what would you do differently?</li>
+                </ul>
+
+                <h4>Section 3: Reaction to proposed solution</h4>
+                <p>Show the Coordinator Workflow wireframe and the coordinator scenes in the demo.</p>
+                <ul class="q-list coord">
+                    <li>Does this match how you think about the process? What is wrong or missing?</li>
+                    <li>What would a participation tracker need to show to be genuinely useful to you?</li>
+                    <li>What export formats would you need (CSV, PDF, email-ready list)?</li>
+                    <li>We are considering building this as [option A: a no-code tool like Airtable or Softr] vs. [option B: a custom web application]. What matters most to you in choosing a platform?</li>
+                </ul>
+
+                <h4>Closing</h4>
+                <ul class="q-list coord">
+                    <li>What is the single biggest frustration in your current workflow?</li>
+                    <li>If this system existed today, how many hours per quarter do you estimate it would save?</li>
+                    <li>What would make you not want to use it?</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="persona-block persona-ed">
+            <div class="persona-header">Executive Director Interview Guide — 30&ndash;40 minutes</div>
+            <div class="persona-body">
+                <h4>Opening (5 min)</h4>
+                <p>We are studying the experience of charities that have presented at 100MWC, specifically the administrative side of receiving and processing gifts. We want to understand what actually happens, not the ideal case.</p>
+
+                <h4>Section 1: Receiving and processing gifts</h4>
+                <ul class="q-list ed">
+                    <li>After you presented at 100MWC, walk me through what happened next. How did gifts arrive?
+                        <div class="probe">Probe: How many came from institutional senders (Fidelity Charitable, Schwab, an IRA custodian)? How many could you not identify?</div>
+                    </li>
+                    <li>How much staff time did processing the gift batch take? (Depositing, data entry, acknowledgments)
+                        <div class="probe">Probe: Did you spread it over weeks? Who did the work?</div>
+                    </li>
+                    <li>Were you ever unable to send a personalized acknowledgment because you didn't know who the donor was? What did you do?</li>
+                </ul>
+
+                <h4>Section 2: Donor relationships</h4>
+                <ul class="q-list ed">
+                    <li>Do you currently have email addresses for any of the 100MWC members who gave to you?</li>
+                    <li>If you had their email addresses, what would you do with them?
+                        <div class="probe">Probe: Would you add them to your newsletter? Send progress updates? Ask them to give again?</div>
+                    </li>
+                    <li>Have any 100MWC members become recurring donors or volunteers after your presentation?</li>
+                </ul>
+
+                <h4>Section 3: Reaction to proposed solution</h4>
+                <p>Describe (or show) the matching list concept: a document sent by the coordinator within 48 hours of the meeting, listing each member's name, email, the charity they allocated to, and their expected payment method/timing.</p>
+                <ul class="q-list ed">
+                    <li>Would receiving a matching list like this change how you process 100MWC gifts? How?</li>
+                    <li>Are you registered with DAF Direct (Fidelity Charitable, Schwab Charitable)? If not, what has prevented you from registering?</li>
+                    <li>Is there anything we could provide — other than money — that would make the 100MWC experience easier for your organization?</li>
+                </ul>
+
+                <h4>Closing</h4>
+                <ul class="q-list ed">
+                    <li>What one thing would most improve your experience as a 100MWC presenting organization?</li>
+                    <li>Is there anything about how 100MWC currently works that surprised you or that you'd change?</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Go / No-Go Criteria</h2>
+        <p>After completing all interviews, we evaluate the evidence against these criteria. <strong>Go</strong> means we proceed to platform selection and build. <strong>No-go</strong> means we document findings, maintain the current process, and revisit in 12 months.</p>
+
+        <div class="go-nogo">
+            <div class="go-box">
+                <strong>GO — Proceed if:</strong>
+                <ul>
+                    <li>At least 4 of 6 member interviews confirm that payment timing/friction causes delayed or missed contributions</li>
+                    <li>At least 2 members who are DAF/QCD-eligible say they would use those methods if the process were simpler</li>
+                    <li>Marty estimates 3+ hours per quarter on tasks the tracker would eliminate</li>
+                    <li>At least 2 of 3 EDs received unidentifiable institutional checks and found it disruptive</li>
+                    <li>At least 2 EDs say donor email addresses would meaningfully change their follow-up behavior</li>
+                    <li>No member expresses strong objection to creating an account</li>
+                </ul>
+            </div>
+            <div class="nogo-box">
+                <strong>NO-GO — Stop if:</strong>
+                <ul>
+                    <li>Fewer than 3 members report payment timing as a real barrier</li>
+                    <li>DAF/QCD usage is effectively zero and members show no interest in adopting it</li>
+                    <li>Marty's time burden is under 2 hours per quarter and he is satisfied with the current process</li>
+                    <li>EDs report no difficulty identifying 100MWC gifts or don't want donor contact info</li>
+                    <li>Significant member resistance to creating accounts (privacy concerns, complexity)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="note-box">
+            <strong>Partial go:</strong> If some criteria are met and others are not, the team should meet to review findings and decide which parts of the solution (if any) are worth building independently. For example, a simpler matching list process might be valuable even without a full account system.
+        </div>
+    </section>
+
+    <section>
+        <h2>Suggested Timeline</h2>
+
+        <div class="timeline-row">
+            <div class="timeline-step ts-1">
+                <div class="ts-week">Week 1</div>
+                <div class="ts-label">Plan review &amp; approval</div>
+            </div>
+            <div class="timeline-step ts-2">
+                <div class="ts-week">Weeks 2&ndash;3</div>
+                <div class="ts-label">Recruit &amp; schedule participants</div>
+            </div>
+            <div class="timeline-step ts-3">
+                <div class="ts-week">Weeks 4&ndash;6</div>
+                <div class="ts-label">Conduct interviews</div>
+            </div>
+            <div class="timeline-step ts-4">
+                <div class="ts-week">Week 7</div>
+                <div class="ts-label">Synthesize findings</div>
+            </div>
+            <div class="timeline-step ts-5">
+                <div class="ts-week">Week 8</div>
+                <div class="ts-label">Go / No-go decision</div>
+            </div>
+        </div>
+
+        <h3>Recruitment Notes</h3>
+        <ul>
+            <li>Member recruitment: ask Marty to identify 10&ndash;12 willing participants across the criteria above. Confirm by email. Offer a 30-minute Zoom or in-person meeting at their convenience.</li>
+            <li>Coordinator: schedule directly with Marty. Request access to any existing tracking spreadsheets or email templates in advance.</li>
+            <li>Executive Director recruitment: pull from the list of organizations that presented in 2024&ndash;2025. Contact the ED directly via email. Reference the 100MWC relationship as context.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>What This Research Does Not Cover</h2>
+
+        <div class="scope-out">
+            <strong>Out of scope for this research:</strong>
+            <ul style="margin-top: 8px;">
+                <li>Platform or technology selection (which tool to build on) — that comes after a Go decision</li>
+                <li>Usability testing of specific screens — the prototype is for illustration, not usability measurement</li>
+                <li>Quantitative survey of all 100+ members — qualitative interviews are sufficient for this stage</li>
+                <li>Fundraising strategy or member recruitment — this research is focused on the payment and coordination workflow only</li>
+                <li>Legal review of the account system against the Founding Agreement — to be done separately if a Go decision is reached</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Related Documents</h2>
+        <ul>
+            <li><a href="strategic-proposal.html">Payment Simplification: Solution Proposal &amp; Research Plan</a> — the full JTBD analysis, proposed solution, UX prototype, and open design questions</li>
+            <li><a href="demo.html">Interactive Prototype</a> — click-through demonstration of the proposed contribute flow, profile setup, and coordinator tracker</li>
+            <li><a href="member-guide.html">Member Guide (Draft)</a> — the working guide members would receive if the system is built</li>
+            <li><a href="coordinator-guide.html">Coordinator Guide (Draft)</a> — the working guide for the coordinator role</li>
+            <li><a href="recipient-guide.html">Recipient Organization Guide (Draft)</a> — the working guide for presenting charities</li>
+        </ul>
+    </section>
+
+    <footer-quote>
+        "Never doubt that a small group of thoughtful committed individuals can change the world;<br>
+        indeed, it's the only thing that ever has." <strong>&mdash; Margaret Mead</strong>
+    </footer-quote>
+</div>
+</body>
+</html>
