@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Men Who Care — Interactive Demo</title>
+<style>
+/* ── Reset & base ─────────────────────────────────── */
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0a1929;
+  color: #fff;
+  display: flex; flex-direction: column;
+  height: 100vh;
+}
+
+/* ── Demo shell ───────────────────────────────────── */
+#progress-rail { height:3px; background:#1B3A5C; }
+#progress-fill { height:3px; background:#2E86AB; width:0%; transition: width .5s ease; }
+
+#demo-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 32px;
+  background: #0d2035;
+  border-bottom: 1px solid #1B3A5C;
+  flex-shrink: 0;
+}
+.demo-logo { font-size:13px; font-weight:700; color:#2E86AB; letter-spacing:.5px; }
+#scene-meta { display:flex; align-items:center; gap:10px; }
+#scene-title { font-size:13px; font-weight:600; color:white; }
+.path-tag {
+  font-size:9px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.8px; padding:2px 8px; border-radius:3px;
+  background:#1B3A5C; color:#88c4e8;
+}
+.path-tag.meeting  { background:#2D3A1B; color:#a8d468; }
+.path-tag.email    { background:#3A1B2D; color:#e8a8c8; }
+.path-tag.shared   { background:#1B3A2D; color:#68e8b0; }
+#step-indicator { font-size:11px; color:#4a7a9b; min-width:70px; text-align:right; }
+
+#demo-body {
+  flex:1; display:flex; gap:20px;
+  padding: 16px 32px;
+  overflow: hidden;
+  min-height:0;
+}
+
+/* ── Device panel ─────────────────────────────────── */
+#device-panel {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+#device-content { width:100%; display:flex; align-items:center; justify-content:center; }
+
+/* Transition */
+.scene-fade { animation: fadeIn .35s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── Role panel ───────────────────────────────────── */
+#role-panel {
+  width: 272px; flex-shrink:0;
+  display:flex; flex-direction:column; gap:8px;
+  overflow-y:auto;
+}
+.role-card {
+  background:#0d2035; border:1px solid #1B3A5C;
+  border-radius:8px; overflow:hidden;
+  transition: border-color .2s;
+}
+.role-card.active { border-color:#2E86AB; }
+.role-header {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 12px;
+  font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.8px;
+}
+.role-icon { font-size:14px; }
+.role-member   .role-header { background:#1B3A5C; color:#88c4e8; }
+.role-coord    .role-header { background:#1B3A1B; color:#a8d468; }
+.role-beneficiary .role-header { background:#3A1B3A; color:#d4a8e8; }
+.role-body { padding:8px 12px; }
+.role-body p {
+  font-size:10px; color:#8aacbe; line-height:1.5; margin-bottom:4px;
+}
+.role-body p::before { content:"· "; color:#2E86AB; font-weight:700; }
+.role-coord .role-body p::before    { color:#6ab04c; }
+.role-beneficiary .role-body p::before { color:#9b59b6; }
+.role-body .role-feeling {
+  margin-top:6px; padding:5px 8px;
+  background:rgba(255,255,255,.04);
+  border-radius:4px; font-size:9px;
+  color:#6a8aaa; font-style:italic;
+  line-height:1.4;
+}
+.role-feeling::before { content:"\" "; }
+
+/* ── Annotation panel ─────────────────────────────── */
+#annotation-bar {
+  background:#0d2035; border-top:1px solid #1B3A5C;
+  padding:8px 32px; display:flex; align-items:center; gap:12px;
+  font-size:11px; color:#6a8aaa; flex-shrink:0;
+  min-height:36px;
+}
+#annotation-bar .ann-icon { font-size:14px; flex-shrink:0; }
+#annotation-bar .ann-text { flex:1; line-height:1.4; }
+#annotation-bar strong { color:#2E86AB; }
+
+/* ── Footer nav ───────────────────────────────────── */
+#demo-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 32px;
+  background:#0d2035;
+  border-top:1px solid #1B3A5C;
+  flex-shrink:0;
+}
+.nav-btn {
+  background:#1B3A5C; color:white; border:none;
+  padding:8px 20px; border-radius:6px; font-size:12px; font-weight:600;
+  cursor:pointer; transition: background .2s;
+}
+.nav-btn:hover { background:#2E86AB; }
+.nav-btn:disabled { opacity:.3; cursor:default; }
+.nav-btn.primary { background:#2E86AB; }
+.nav-btn.primary:hover { background:#2478a0; }
+
+#path-dots { display:flex; align-items:center; gap:6px; }
+.path-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:#1B3A5C; cursor:pointer; transition:background .2s;
+}
+.path-dot.done { background:#4a7a9b; }
+.path-dot.active { background:#2E86AB; width:22px; border-radius:4px; }
+
+/* ── Lobby ────────────────────────────────────────── */
+.lobby-wrap {
+  text-align:center; max-width:860px; margin:0 auto; padding:20px;
+}
+.lobby-title {
+  font-size:28px; font-weight:800; color:white;
+  letter-spacing:-.5px; margin-bottom:4px;
+}
+.lobby-title span { color:#2E86AB; }
+.lobby-sub { font-size:14px; color:#4a7a9b; margin-bottom:24px; }
+.lobby-stat {
+  display:inline-block; background:#1B3A5C; border-radius:8px;
+  padding:8px 20px; font-size:13px; color:#88c4e8; margin-bottom:24px;
+}
+.lobby-stat strong { color:white; font-size:16px; }
+.entry-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
+.entry-card {
+  background:#0d2035; border:2px solid #1B3A5C; border-radius:12px;
+  padding:20px 16px; cursor:pointer; transition:all .2s; text-align:left;
+}
+.entry-card:hover { border-color:#2E86AB; transform:translateY(-2px); background:#0f2540; }
+.entry-card h3 { font-size:14px; color:white; margin-bottom:6px; }
+.entry-card p { font-size:11px; color:#4a7a9b; line-height:1.5; margin-bottom:10px; }
+.entry-badge {
+  display:inline-block; font-size:9px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.6px;
+  padding:2px 8px; border-radius:3px;
+}
+.badge-web     { background:#1B3A5C; color:#88c4e8; }
+.badge-meeting { background:#2D3A1B; color:#a8d468; }
+.badge-email   { background:#3A1B2D; color:#e8a8c8; }
+.entry-icon { font-size:28px; margin-bottom:10px; }
+.lobby-roles { display:flex; justify-content:center; gap:12px; }
+.lobby-role-tag {
+  background:#0d2035; border:1px solid #1B3A5C;
+  padding:5px 14px; border-radius:20px; font-size:11px; color:#4a7a9b;
+}
+
+/* ── Browser frame ────────────────────────────────── */
+.browser-frame {
+  background:white; border-radius:8px; overflow:hidden;
+  box-shadow:0 8px 40px rgba(0,0,0,.5);
+  width:680px; max-height:520px;
+  border:1px solid #333;
+}
+.browser-chrome {
+  background:#2b2b2b; padding:8px 12px;
+  display:flex; align-items:center; gap:8px;
+}
+.browser-dot { width:10px; height:10px; border-radius:50%; }
+.bd-r { background:#ff5f57; }
+.bd-y { background:#ffbd2e; }
+.bd-g { background:#28c840; }
+.browser-url {
+  flex:1; background:#3d3d3d; border-radius:4px;
+  padding:3px 10px; font-size:10px; color:#bbb;
+  display:flex; align-items:center; gap:6px;
+}
+.url-lock { font-size:9px; color:#6a6; }
+.browser-body { overflow-y:auto; max-height:476px; }
+
+/* Site recreation */
+.site-nav {
+  background:white; padding:12px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid #eee;
+  position:sticky; top:0; z-index:10;
+}
+.site-logo { font-size:13px; font-weight:800; color:#1a1a1a; letter-spacing:-.3px; line-height:1.2; }
+.site-logo span { display:block; font-size:9px; font-weight:500; color:#666; letter-spacing:1px; text-transform:uppercase; }
+.site-nav-links { display:flex; gap:16px; }
+.site-nav-links a { font-size:10px; color:#333; text-decoration:none; white-space:nowrap; }
+.site-nav-links a:hover { color:#2D8B4E; }
+.site-contribute-btn {
+  background:#2D8B4E; color:white; border:none; border-radius:4px;
+  padding:6px 14px; font-size:11px; font-weight:700; cursor:pointer;
+  display:none; /* hidden initially */
+  animation: popIn .5s cubic-bezier(.175,.885,.32,1.275) forwards;
+}
+@keyframes popIn {
+  from { transform:scale(0); opacity:0; }
+  to   { transform:scale(1); opacity:1; }
+}
+.site-hero {
+  background: linear-gradient(160deg, #1B3A5C 0%, #0d2035 100%);
+  padding:32px 24px; color:white; position:relative;
+  overflow:hidden;
+}
+.site-hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.site-hero-stat {
+  font-size:26px; font-weight:800; margin-bottom:4px; position:relative;
+}
+.site-hero-stat span { color:#2E86AB; }
+.site-hero-sub { font-size:12px; color:#88c4e8; margin-bottom:16px; position:relative; }
+.site-hero-quote {
+  font-size:11px; color:rgba(255,255,255,.65); font-style:italic;
+  line-height:1.5; border-left:3px solid #2E86AB; padding-left:10px;
+  max-width:400px; position:relative; margin-bottom:16px;
+}
+.site-hero-cta {
+  display:inline-block; background:transparent; color:#2E86AB;
+  border:1px solid #2E86AB; padding:7px 16px; border-radius:4px;
+  font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.6px; cursor:pointer; position:relative; margin-right:8px;
+}
+.site-contribute-hero {
+  display:none;
+  background:#2D8B4E; color:white; border:none;
+  padding:7px 16px; border-radius:4px;
+  font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.6px; cursor:pointer; position:relative;
+  animation: popIn .5s cubic-bezier(.175,.885,.32,1.275) forwards;
+}
+.site-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#eee; }
+.site-cell { background:white; padding:16px; }
+.site-cell h4 { font-size:11px; font-weight:700; color:#1a1a1a; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+.site-cell p  { font-size:10px; color:#666; line-height:1.5; }
+.site-footer { background:#1a1a1a; padding:16px 24px; display:flex; justify-content:space-between; align-items:center; }
+.site-footer-logo { font-size:11px; font-weight:700; color:white; }
+.site-footer-copy { font-size:9px; color:#666; }
+
+/* ── Phone frame ──────────────────────────────────── */
+.phone-frame {
+  width:260px; background:white; border-radius:30px;
+  box-shadow:0 8px 40px rgba(0,0,0,.5);
+  border:8px solid #1a1a1a; overflow:hidden;
+  position:relative;
+}
+.phone-notch {
+  height:22px; background:#1a1a1a;
+  display:flex; align-items:center; justify-content:center;
+}
+.phone-notch::after { content:''; width:60px; height:12px; background:#333; border-radius:0 0 8px 8px; }
+.phone-status {
+  background:#f9f9f9; border-bottom:1px solid #eee;
+  padding:3px 12px; font-size:8px; color:#888;
+  display:flex; justify-content:space-between;
+}
+.phone-scroll { overflow-y:auto; max-height:420px; background:white; }
+
+/* Phone UI atoms */
+.ph-header { background:#1B3A5C; color:white; padding:10px 12px; font-size:11px; font-weight:700; text-align:center; }
+.ph-subhead { font-size:9px; color:#888; text-align:center; margin-bottom:8px; padding-top:6px; }
+.ph-body { padding:10px 12px; }
+.ph-charity-card { border:1px solid #ddd; border-radius:6px; padding:8px 10px; margin-bottom:8px; }
+.ph-charity-name { font-size:10px; font-weight:700; color:#1B3A5C; margin-bottom:2px; }
+.ph-charity-desc { font-size:8px; color:#666; margin-bottom:6px; line-height:1.3; }
+.ph-amount-row { display:flex; align-items:center; gap:6px; font-size:9px; color:#888; }
+.ph-amount-input { border:1px solid #2D8B4E; border-radius:3px; width:50px; height:18px; font-size:9px; font-weight:700; color:#2D8B4E; text-align:center; background:#e8f5e9; }
+.ph-btn { border-radius:5px; padding:8px; font-size:10px; font-weight:700; text-align:center; margin-top:6px; color:white; }
+.ph-btn-green  { background:#2D8B4E; }
+.ph-btn-blue   { background:#2E86AB; }
+.ph-btn-navy   { background:#1B3A5C; }
+.ph-btn-ghost  { background:white; color:#1B3A5C; border:1px solid #1B3A5C; }
+.ph-divider    { border:none; border-top:1px solid #eee; margin:8px 0; }
+.ph-section    { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#2D8B4E; margin-bottom:4px; }
+.ph-row { display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid #f5f5f5; font-size:9px; }
+.ph-badge { font-size:7px; font-weight:700; padding:1px 5px; border-radius:2px; }
+.ph-badge-free { background:#e8f5e9; color:#2D8B4E; }
+.ph-badge-fee  { background:#fff3e0; color:#E8734A; }
+.ph-check { width:14px; height:14px; border-radius:50%; background:#2D8B4E; color:white; font-size:8px; line-height:14px; text-align:center; }
+.ph-option { display:flex; align-items:center; gap:6px; padding:4px 0; border-bottom:1px solid #f5f5f5; font-size:9px; }
+.ph-radio { width:11px; height:11px; border:1.5px solid #1B3A5C; border-radius:50%; }
+.ph-radio.on { background:#1B3A5C; box-shadow:inset 0 0 0 2px white; }
+.ph-success-icon { width:40px; height:40px; border-radius:50%; background:#2D8B4E; color:white; font-size:20px; line-height:40px; text-align:center; margin:12px auto; }
+.ph-label { font-size:9px; font-weight:700; color:#333; margin-bottom:2px; }
+.ph-field { border:1px solid #ddd; border-radius:3px; height:20px; background:#fafafa; margin-bottom:5px; padding:0 6px; font-size:8px; color:#333; display:flex; align-items:center; }
+
+/* ── Email frame ──────────────────────────────────── */
+.email-frame {
+  width:260px; background:white; border-radius:30px;
+  box-shadow:0 8px 40px rgba(0,0,0,.5);
+  border:8px solid #1a1a1a; overflow:hidden;
+}
+.email-inbox { background:#f9f9f9; max-height:440px; overflow-y:auto; }
+.email-header-bar { background:#1a1a1a; padding:8px 12px; color:white; font-size:10px; font-weight:700; display:flex; justify-content:space-between; }
+.inbox-row { padding:10px 12px; border-bottom:1px solid #e0e0e0; cursor:pointer; background:white; }
+.inbox-row:hover { background:#f5f5f5; }
+.inbox-row.unread { background:#fff; border-left:3px solid #2E86AB; }
+.inbox-from { font-size:9px; font-weight:700; color:#222; margin-bottom:2px; }
+.inbox-subj { font-size:9px; font-weight:700; color:#333; margin-bottom:2px; }
+.inbox-subj.unread { color:#1B3A5C; }
+.inbox-prev { font-size:8px; color:#888; }
+.inbox-time { font-size:8px; color:#aaa; float:right; margin-top:-18px; }
+.inbox-dot  { width:7px; height:7px; border-radius:50%; background:#2E86AB; float:left; margin-right:6px; margin-top:2px; }
+
+.email-open { padding:10px 12px; max-height:440px; overflow-y:auto; }
+.em-header  { border-bottom:1px solid #eee; padding-bottom:8px; margin-bottom:8px; }
+.em-subject { font-size:11px; font-weight:700; color:#1B3A5C; margin-bottom:4px; line-height:1.3; }
+.em-from    { font-size:8px; color:#888; }
+.em-body    { font-size:9px; color:#444; line-height:1.5; margin-bottom:8px; }
+.em-charity { background:#f5f5f5; border-radius:4px; padding:6px 8px; margin-bottom:5px; font-size:9px; }
+.em-charity strong { color:#1B3A5C; font-size:9px; }
+.em-contribute-btn { background:#2D8B4E; color:white; border-radius:5px; padding:8px; font-size:10px; font-weight:700; text-align:center; margin:8px 0; cursor:pointer; }
+.em-qr { width:50px; height:50px; background:#eee; border:1px solid #ddd; margin:4px auto; display:flex; align-items:center; justify-content:center; font-size:8px; color:#aaa; border-radius:2px; }
+
+/* ── Meeting room scene ───────────────────────────── */
+.room-scene {
+  width:680px; background:#0a1929; border-radius:12px;
+  overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,.6);
+  padding:0;
+}
+.room-stage {
+  background: linear-gradient(to bottom, #1B3A5C, #0d2035);
+  padding:20px; text-align:center; position:relative;
+}
+.stage-screen {
+  background:#0a1929; border:2px solid #2E86AB; border-radius:4px;
+  padding:12px; margin:0 auto 12px; width:280px;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.stage-screen-title { font-size:10px; color:#2E86AB; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+.stage-qr {
+  width:70px; height:70px; background:white; padding:4px; border-radius:2px;
+  display:grid; grid-template-columns:repeat(7,1fr); gap:1px;
+}
+.qr-c { background:#1a1a1a; border-radius:.5px; }
+.qr-w { background:white; }
+.stage-screen-url { font-size:8px; color:#4a7a9b; }
+.stage-speaker {
+  width:32px; height:52px; margin:0 auto;
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+}
+.speaker-head { width:18px; height:18px; border-radius:50%; background:#4a7a9b; }
+.speaker-body { width:28px; flex:1; background:#4a7a9b; border-radius:10px 10px 0 0; }
+.room-audience { background:#0a1929; padding:12px 20px; }
+.audience-label { font-size:9px; color:#4a7a9b; text-align:center; margin-bottom:10px; text-transform:uppercase; letter-spacing:.8px; }
+.audience-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:5px; }
+.audience-dot { width:16px; height:16px; border-radius:50%; background:#1B3A5C; }
+.audience-dot.scanning { background:#2D8B4E; animation: pulse 1s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+.room-caption { font-size:10px; color:#4a7a9b; text-align:center; padding:8px; font-style:italic; }
+
+/* ── Inject overlay ───────────────────────────────── */
+.inject-overlay {
+  position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+  background:#0d2035; border:1px solid #2E86AB; border-radius:8px;
+  padding:10px 16px; font-size:11px; color:#88c4e8;
+  display:flex; align-items:center; gap:10px; box-shadow:0 4px 20px rgba(46,134,171,.3);
+  cursor:pointer; transition:background .2s; white-space:nowrap;
+}
+.inject-overlay:hover { background:#1B3A5C; }
+.inject-arrow { color:#2E86AB; font-size:16px; animation:bounceLeft 1s ease infinite; }
+@keyframes bounceLeft { 0%,100%{transform:translateX(0);} 50%{transform:translateX(-4px);} }
+.highlight-pulse {
+  box-shadow:0 0 0 3px rgba(46,170,68,.6);
+  animation:glow 1.5s ease infinite;
+}
+@keyframes glow { 0%,100%{box-shadow:0 0 0 2px rgba(46,170,68,.6);} 50%{box-shadow:0 0 0 5px rgba(46,170,68,.3);} }
+
+/* ── DAF scene ────────────────────────────────────── */
+.daf-sponsors { display:flex; flex-direction:column; gap:4px; margin:6px 0; }
+.daf-sponsor-btn { background:white; border:1px solid #ddd; border-radius:4px; padding:5px 8px; font-size:9px; color:#1B3A5C; font-weight:600; cursor:pointer; text-align:left; display:flex; align-items:center; gap:6px; }
+.daf-sponsor-btn.selected { border-color:#2D8B4E; background:#e8f5e9; }
+
+/* ── Lobby path toggle ───────────────────────────── */
+.path-selector { display:none; /* used if we want in-demo path switching */ }
+</style>
+</head>
+<body>
+
+<div id="progress-rail"><div id="progress-fill"></div></div>
+
+<div id="demo-header">
+  <div class="demo-logo">100 Men Who Care · Interactive Demo</div>
+  <div id="scene-meta">
+    <span id="scene-title">Welcome</span>
+    <span id="path-tag-el" class="path-tag"></span>
+  </div>
+  <div id="step-indicator"></div>
+</div>
+
+<div id="demo-body">
+  <div id="device-panel"><div id="device-content"></div></div>
+  <div id="role-panel">
+    <div class="role-card role-member" id="rc-member">
+      <div class="role-header"><span class="role-icon">&#128100;</span> Member</div>
+      <div class="role-body" id="rc-member-body"><p>Select a path to begin</p></div>
+    </div>
+    <div class="role-card role-coord" id="rc-coord">
+      <div class="role-header"><span class="role-icon">&#128203;</span> Coordinator</div>
+      <div class="role-body" id="rc-coord-body"><p>Select a path to begin</p></div>
+    </div>
+    <div class="role-card role-beneficiary" id="rc-beneficiary">
+      <div class="role-header"><span class="role-icon">&#127968;</span> Beneficiary</div>
+      <div class="role-body" id="rc-beneficiary-body"><p>Select a path to begin</p></div>
+    </div>
+  </div>
+</div>
+
+<div id="annotation-bar">
+  <span class="ann-icon">&#128161;</span>
+  <span id="ann-text" class="ann-text">Choose an entry point to start the demo walkthrough.</span>
+</div>
+
+<div id="demo-footer">
+  <button class="nav-btn" id="back-btn" onclick="navBack()">&#8592; Back</button>
+  <div id="path-dots"></div>
+  <button class="nav-btn primary" id="next-btn" onclick="navNext()">Next &#8594;</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   Scene definitions
+   ═══════════════════════════════════════════════════ */
+
+const QR_CELLS = `
+  <div class="qr-c"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-c"></div>
+  <div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div>
+  <div class="qr-c"></div><div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div><div class="qr-c"></div>
+  <div class="qr-w"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-w"></div>
+  <div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div>
+  <div class="qr-c"></div><div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div><div class="qr-c"></div>
+  <div class="qr-c"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-w"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-c"></div>
+`;
+
+const SITE_HTML = `
+<div class="site-nav">
+  <div class="site-logo">100 Men Who Care<span>Wood River Valley</span></div>
+  <div class="site-nav-links">
+    <a href="#">How It Works</a>
+    <a href="#">Membership</a>
+    <a href="#">Meetings</a>
+    <a href="#">Who We've Helped</a>
+    <a href="#">Contact</a>
+  </div>
+  <button class="site-contribute-btn" id="site-nav-btn" onclick="goContribute()">Contribute &#8594;</button>
+</div>
+<div class="site-hero">
+  <div class="site-hero-stat">$<span>757,520</span> donated to local charities</div>
+  <div class="site-hero-sub">since 2013 &nbsp;·&nbsp; Wood River Valley, Idaho &nbsp;·&nbsp; 100 members</div>
+  <div class="site-hero-quote">"Never doubt that a small group of thoughtful committed individuals can change the world; indeed, it's the only thing that ever has." &mdash; Margaret Mead</div>
+  <button class="site-hero-cta">Learn More About Us</button>
+  <button class="site-contribute-hero" id="site-hero-btn" onclick="goContribute()">Contribute Now &#8594;</button>
+</div>
+<div class="site-grid">
+  <div class="site-cell"><h4>About Us</h4><p>Founded in 2013 by Marty Lyon. Members meet quarterly to support local nonprofits through direct, collective giving.</p></div>
+  <div class="site-cell"><h4>How It Works</h4><p>Three nonprofits present at each meeting. Members contribute $100 directly to the organizations that inspire them.</p></div>
+  <div class="site-cell"><h4>Membership</h4><p>Open to anyone who shares our charitable mission. No fees. Your $400/year goes entirely to local organizations.</p></div>
+  <div class="site-cell"><h4>Meetings</h4><p>Quarterly at locations across the Wood River Valley. Virtual option available. One hour. No committees.</p></div>
+  <div class="site-cell"><h4>Who We've Helped</h4><p>46 organizations supported since 2013. From food banks to youth programs to crisis services.</p></div>
+  <div class="site-cell"><h4>Next Meeting</h4><p>Tuesday, April 15 &middot; Town Center West, Hailey &middot; 5:30–6:30 PM &middot; Virtual link in announcement email.</p></div>
+</div>
+<div class="site-footer">
+  <div class="site-footer-logo">100 Men Who Care &mdash; Wood River Valley</div>
+  <div class="site-footer-copy">marty@100menwhocarewoodrivervalley.com &nbsp;·&nbsp; (253) 209-4586</div>
+</div>
+`;
+
+const CONTRIBUTE_HTML = `
+<div class="ph-header">Your Contribution &mdash; Q2 2026</div>
+<div class="ph-body">
+  <div style="font-size:9px;color:#2D8B4E;font-weight:700;text-align:center;margin-bottom:8px;">Allocate your minimum $100 across any of the three presenting organizations.</div>
+  <div class="ph-charity-card" style="border-color:#2D8B4E;">
+    <div class="ph-charity-name">The Hunger Coalition</div>
+    <div class="ph-charity-desc">Stocking pantries and delivering meals across Blaine County since 1984.</div>
+    <div class="ph-amount-row">Your gift: $<div class="ph-amount-input">100</div></div>
+  </div>
+  <div class="ph-charity-card">
+    <div class="ph-charity-name">Sun Valley Humane Society</div>
+    <div class="ph-charity-desc">Shelter, adoption, and community programs for animals in the Wood River Valley.</div>
+    <div class="ph-amount-row">Your gift: $<div class="ph-amount-input">0</div></div>
+  </div>
+  <div class="ph-charity-card">
+    <div class="ph-charity-name">YMCA Youth Fund</div>
+    <div class="ph-charity-desc">Scholarships ensuring every kid can participate regardless of family income.</div>
+    <div class="ph-amount-row">Your gift: $<div class="ph-amount-input">0</div></div>
+  </div>
+  <div style="background:#e8f5e9;border-radius:4px;padding:5px 8px;font-size:9px;color:#2D8B4E;font-weight:700;margin-bottom:6px;">Total: $100 &nbsp;&#10003; Meets minimum</div>
+  <div class="ph-btn ph-btn-green" onclick="goScene('payment')">Choose How to Pay &#8594;</div>
+</div>
+`;
+
+const PAYMENT_HTML = `
+<div class="ph-header">How Would You Like to Give?</div>
+<div class="ph-body">
+  <div class="ph-subhead" style="text-align:left;padding:0 0 6px;">The Hunger Coalition &nbsp;&middot;&nbsp; $100</div>
+  <div class="ph-section">Fee-free &mdash; 100&cent; to the cause</div>
+  <div class="ph-option"><div class="ph-radio on"></div><div style="font-size:9px;font-weight:600;">Donor Advised Fund (DAF)</div><span class="ph-badge ph-badge-free">FREE</span></div>
+  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">Zelle</div><span class="ph-badge ph-badge-free">FREE</span></div>
+  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">ACH / Bank Transfer</div><span class="ph-badge ph-badge-free">FREE</span></div>
+  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">IRA / QCD (age 70&frac12;+)</div><span class="ph-badge ph-badge-free">FREE</span></div>
+  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">Check</div><span class="ph-badge ph-badge-free">FREE</span></div>
+  <div class="ph-divider"></div>
+  <div class="ph-section" style="color:#E8734A;">Convenient &mdash; small processing fee</div>
+  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">Online / Credit Card</div><span class="ph-badge ph-badge-fee">2&ndash;3%</span></div>
+  <div class="ph-option"><div class="ph-radio"></div><div style="font-size:9px;">Venmo</div><span class="ph-badge ph-badge-fee">~2%</span></div>
+  <div class="ph-btn ph-btn-green" onclick="goScene('daf')">Continue with DAF &#8594;</div>
+</div>
+`;
+
+const DAF_HTML = `
+<div class="ph-header">Give with Your Donor Advised Fund</div>
+<div class="ph-body">
+  <div class="ph-subhead" style="text-align:left;padding:0 0 6px;">Hunger Coalition &nbsp;&middot;&nbsp; $100 &nbsp;&middot;&nbsp; fee-free</div>
+  <div style="font-size:9px;color:#444;margin-bottom:8px;line-height:1.4;">Select your DAF sponsor. The charity's name and EIN are pre-filled.</div>
+  <div class="daf-sponsors">
+    <div class="daf-sponsor-btn selected">&#127925; &nbsp; Fidelity Charitable &nbsp;<span style="color:#2D8B4E;font-size:8px;">(your sponsor)</span></div>
+    <div class="daf-sponsor-btn">Schwab Charitable</div>
+    <div class="daf-sponsor-btn">Vanguard Charitable</div>
+    <div class="daf-sponsor-btn">Community Foundation of Central Idaho</div>
+    <div class="daf-sponsor-btn">Other sponsor &rarr;</div>
+  </div>
+  <div style="background:#e8f5e9;border-radius:4px;padding:6px 8px;font-size:8px;color:#2D5016;margin:6px 0;line-height:1.4;">
+    <div style="font-weight:700;margin-bottom:2px;">Pre-filled from your profile:</div>
+    Charity: The Hunger Coalition &nbsp;·&nbsp; EIN: 82-0462309<br>
+    Purpose: "100 Men Who Care" &nbsp;·&nbsp; Amount: $100
+  </div>
+  <div class="ph-btn ph-btn-green" onclick="goScene('confirm')">Open Fidelity Charitable &#8594;</div>
+  <div style="font-size:8px;color:#888;text-align:center;margin-top:4px;">Grant typically processes in 1&ndash;3 business days</div>
+</div>
+`;
+
+const CONFIRM_HTML = `
+<div class="ph-header">Contribution Confirmed</div>
+<div class="ph-body">
+  <div class="ph-success-icon">&#10003;</div>
+  <div style="text-align:center;font-size:13px;font-weight:700;color:#1B3A5C;margin-bottom:4px;">Thank You!</div>
+  <div style="text-align:center;font-size:9px;color:#666;margin-bottom:10px;">Your contribution has been logged.</div>
+  <div style="background:#f0f6fa;border-radius:6px;padding:8px 10px;font-size:9px;margin-bottom:8px;">
+    <div style="font-weight:700;color:#1B3A5C;margin-bottom:4px;">Q2 2026 Summary</div>
+    <div>The Hunger Coalition &nbsp;&nbsp;&nbsp;&nbsp; $100 (DAF)</div>
+    <div style="margin-top:4px;padding-top:4px;border-top:1px solid #ddd;font-weight:700;">Total given: $100</div>
+  </div>
+  <div style="font-size:8px;color:#888;line-height:1.4;margin-bottom:8px;">Fidelity Charitable will document the grant. The Hunger Coalition will send you a personalized acknowledgment letter.</div>
+  <div class="ph-btn ph-btn-navy" style="font-size:9px;">Back to 100MWC Site</div>
+</div>
+`;
+
+const scenes = {
+
+  lobby: {
+    title: 'Welcome', pathTag: '', pathClass: '',
+    step: 0, pathLen: 0,
+    annotation: 'Choose how you arrived at 100 Men Who Care &mdash; the demo follows each path through the full experience.',
+    roles: {
+      member:      ['Ready to give', 'First time or returning', 'On your phone, laptop, or at the meeting'],
+      coord:       ['Quarterly cycle running', 'Contribute page is live', 'Tracker ready for confirmations'],
+      beneficiary: ['Payment info submitted', 'Waiting for the meeting', 'Gifts will arrive soon'],
+    },
+    device: 'lobby',
+    next: null,
+  },
+
+  // ── Website path ───────────────────────────────
+  'web-before': {
+    title: 'The 100MWC Website Today', pathTag: 'Website Path', pathClass: 'web',
+    step: 1, pathLen: 5,
+    annotation: 'This is <strong>www.100menwhocarewoodrivervalley.com</strong> as it exists right now. Beautifully clear about the mission. But notice: there is no way to donate directly from here.',
+    roles: {
+      member:      ['Visits site to learn about 100MWC', 'Finds meeting info and past recipients', '"How do I actually give my $100?"'],
+      coord:       ['Maintains site on Squarespace', 'Posts meeting dates and nominees', 'Sends payment info separately via email'],
+      beneficiary: ['Downloads the nomination form', 'Submits their organization for consideration', 'Has no idea yet if they&rsquo;ll be selected'],
+    },
+    device: 'browser-before',
+    next: 'web-inject',
+    feeling: { member: '"I want to give but there&rsquo;s no button."' },
+  },
+
+  'web-inject': {
+    title: 'Add the Donate Button', pathTag: 'Website Path', pathClass: 'web',
+    step: 2, pathLen: 5,
+    annotation: 'One button in the nav and one in the hero. That&rsquo;s the only change to the existing site. Everything else &mdash; the brand, the content, the voice &mdash; stays exactly the same.',
+    roles: {
+      member:      ['Sees "Contribute" in the nav', 'Clicks &mdash; lands on the Contribute page', '"That was easy to find."'],
+      coord:       ['Adds one button to Squarespace (10 min)', 'Button links to the permanent /contribute URL', 'No other site changes needed'],
+      beneficiary: ['Payment info now drives this page', 'Their Zelle, EIN, and donation link are live', 'Members can give starting right now'],
+    },
+    device: 'browser-after',
+    next: 'contribute',
+    feeling: { member: '"There it is. One tap and I&rsquo;m giving."' },
+  },
+
+  // ── Meeting path ───────────────────────────────
+  'meeting-room': {
+    title: 'At the Quarterly Meeting', pathTag: 'Meeting Path', pathClass: 'meeting',
+    step: 1, pathLen: 4,
+    annotation: 'The QR code is projected on screen <strong>during all three presentations</strong> &mdash; not just during one. Members can scan the moment they feel inspired.',
+    roles: {
+      member:      ['Listening to 3-minute presentations', 'Feels inspired during Hunger Coalition talk', 'Sees QR code &mdash; scans mid-meeting'],
+      coord:       ['Contribute page is live and tested', 'QR code on screen from the start', 'Mobile check-logging app open for walk-in checks'],
+      beneficiary: ['At the podium presenting their mission', 'Can see members scanning their phones', '"This is working in real time."'],
+    },
+    device: 'room',
+    next: 'meeting-scan',
+  },
+
+  'meeting-scan': {
+    title: 'Scanning the QR Code', pathTag: 'Meeting Path', pathClass: 'meeting',
+    step: 2, pathLen: 4,
+    annotation: 'The QR code opens the Contribute page directly &mdash; pre-loaded with all three charities, their payment methods, and the member&rsquo;s preferred giving method from their profile.',
+    roles: {
+      member:      ['Scans QR while presenter is still speaking', 'Contribute page opens instantly', 'Allocates $100 before the meeting ends'],
+      coord:       ['Participation tracker increments live', 'First confirmed gifts logged', 'Check collection happens simultaneously'],
+      beneficiary: ['Sees early Zelle transfers and online gifts', 'Within an hour of presenting', '"They&rsquo;re already giving."'],
+    },
+    device: 'phone-scan',
+    next: 'contribute',
+  },
+
+  // ── Email path ─────────────────────────────────
+  'email-inbox': {
+    title: 'Post-Meeting Email Arrives', pathTag: 'Email Path', pathClass: 'email',
+    step: 1, pathLen: 4,
+    annotation: 'Sent within 48 hours of the meeting. For members who couldn&rsquo;t attend, this email is their entire donate experience &mdash; it needs to be complete and frictionless.',
+    roles: {
+      member:      ['Gets email 36 hours after meeting', 'Subject catches attention in inbox', 'Opens on phone while drinking coffee'],
+      coord:       ['Template auto-filled from charity setup forms', 'Sent to all 103 members', 'Two-week reminder auto-scheduled'],
+      beneficiary: ['Knows the email is landing now', 'Monitoring their donation page for traffic', 'Payment info is in the email'],
+    },
+    device: 'email-inbox',
+    next: 'email-open',
+  },
+
+  'email-open': {
+    title: 'Email Opened &mdash; All Three Charities', pathTag: 'Email Path', pathClass: 'email',
+    step: 2, pathLen: 4,
+    annotation: 'The "Contribute Now" button and QR code both link to the same Contribute page. One tap is all it takes to get from email to a completed gift.',
+    roles: {
+      member:      ['Reads charity descriptions', 'Remembers the Hunger Coalition from a friend&rsquo;s nomination', 'Taps Contribute Now'],
+      coord:       ['QR code auto-generated from contribute page URL', 'Charity descriptions pulled from setup forms', 'No manual assembly required'],
+      beneficiary: ['Traffic spikes on their donation page', 'Gifts start arriving via Zelle and online', 'Matching list will come in two weeks'],
+    },
+    device: 'email-open',
+    next: 'contribute',
+  },
+
+  // ── Shared path ────────────────────────────────
+  contribute: {
+    title: 'Contribute Page', pathTag: 'All Paths', pathClass: 'shared',
+    step: 3, pathLen: 5, // adjusted per path in render
+    annotation: 'All three entry points converge here. The page is <strong>identical</strong> regardless of how you arrived &mdash; website, QR scan, or email link. Member&rsquo;s preferred giving method is pre-selected from their profile.',
+    roles: {
+      member:      ['Sees all 3 charities with equal weight', 'Default: $100 to top charity', 'Can split any way they want'],
+      coord:       ['Page auto-updates each quarter from charity forms', 'No coding &mdash; just fills in name + EIN + payment links', '~15 minutes of work'],
+      beneficiary: ['Three charities get equal visual treatment', 'No single "winner" &mdash; all three receive direct gifts', 'Members direct their own allocation'],
+    },
+    device: 'phone-contribute',
+    next: 'payment',
+  },
+
+  payment: {
+    title: 'Choose Payment Method', pathTag: 'All Paths', pathClass: 'shared',
+    step: 4, pathLen: 5,
+    annotation: 'Fee-free methods are grouped at the top. For this demo we follow the <strong>DAF path</strong> &mdash; the most sophisticated use case, enabled by the member&rsquo;s payment profile setup.',
+    roles: {
+      member:      ['DAF pre-selected from profile', 'Sees "your sponsor" badge on Fidelity', 'Makes the most tax-efficient choice effortlessly'],
+      coord:       ['Method choice feeds participation tracker', 'DAF selection triggers matching list entry', 'No coordinator action needed at this step'],
+      beneficiary: ['Will receive an EFT from Fidelity Charitable in 1&ndash;3 days', 'Matching list will tie it to the member&rsquo;s name', 'Fee-free &mdash; full $100 arrives'],
+    },
+    device: 'phone-payment',
+    next: 'daf',
+  },
+
+  daf: {
+    title: 'DAF Grant &mdash; Fidelity Charitable', pathTag: 'All Paths', pathClass: 'shared',
+    step: 5, pathLen: 6,
+    annotation: 'The DAF Direct widget opens the member&rsquo;s Fidelity Charitable account with the charity name, EIN, and amount <strong>pre-filled</strong> from their profile. Three taps to complete.',
+    roles: {
+      member:      ['Fidelity opens pre-loaded with charity info', 'Confirms grant in 30 seconds', 'Tax documentation automatic from Fidelity'],
+      coord:       ['Matching list: Jane Smith &rarr; Fidelity &rarr; Hunger Coalition', 'Coordinator will export this list at the 2-week mark', 'Charity can then identify the institutional EFT'],
+      beneficiary: ['Receives EFT labelled "Fidelity Charitable / 100 Men Who Care"', 'Without matching list: mystery check', 'With matching list: sends Jane Smith a personal thank-you'],
+    },
+    device: 'phone-daf',
+    next: 'confirm',
+  },
+
+  confirm: {
+    title: 'Done &mdash; 3 Minutes Total', pathTag: 'All Paths', pathClass: 'shared',
+    step: 6, pathLen: 6,
+    annotation: 'Gift confirmed. Impact logged. Tax documentation handled. The member&rsquo;s "I&rsquo;ve Donated" confirmation feeds the Coordinator&rsquo;s tracker and the charity&rsquo;s matching list automatically.',
+    roles: {
+      member:      ['"Done before I finished my coffee."', 'Tax receipt from Fidelity Charitable', 'Personal acknowledgment letter from the charity in 2 weeks'],
+      coord:       ['Participation count: 79 confirmed', 'One DAF entry added to matching list', 'Two-week reminder will go to the 24 not yet confirmed'],
+      beneficiary: ['Gift en route from Fidelity', 'Name on matching list: Jane Smith', 'Will send a personalized thank-you letter'],
+    },
+    device: 'phone-confirm',
+    next: null,
+  },
+
+};
+
+/* ═══════════════════════════════════════════════════
+   Navigation state
+   ═══════════════════════════════════════════════════ */
+
+const paths = {
+  web:     ['lobby', 'web-before', 'web-inject', 'contribute', 'payment', 'daf', 'confirm'],
+  meeting: ['lobby', 'meeting-room', 'meeting-scan', 'contribute', 'payment', 'daf', 'confirm'],
+  email:   ['lobby', 'email-inbox', 'email-open', 'contribute', 'payment', 'daf', 'confirm'],
+};
+
+let currentPath = 'web';
+let currentIdx  = 0;
+let injectDone  = false;
+
+function currentSceneId() { return paths[currentPath][currentIdx]; }
+
+/* ═══════════════════════════════════════════════════
+   Device renderers
+   ═══════════════════════════════════════════════════ */
+
+function renderLobby() {
+  return `
+  <div class="lobby-wrap">
+    <div class="lobby-title">100 <span>Men Who Care</span> Wood River Valley</div>
+    <div class="lobby-sub">Interactive walkthrough of the contribute workflow</div>
+    <div class="lobby-stat">$<strong>757,520</strong> donated to local charities since 2013</div>
+    <div class="entry-grid">
+      <div class="entry-card" onclick="startPath('web')">
+        <div class="entry-icon">&#128187;</div>
+        <h3>Visiting the Website</h3>
+        <p>A prospective or returning member lands on the 100MWC site and discovers the Contribute button.</p>
+        <span class="entry-badge badge-web">Website Path</span>
+      </div>
+      <div class="entry-card" onclick="startPath('meeting')">
+        <div class="entry-icon">&#127979;</div>
+        <h3>At the Meeting</h3>
+        <p>A member at the quarterly meeting scans the QR code from the screen during a presentation.</p>
+        <span class="entry-badge badge-meeting">Meeting Path</span>
+      </div>
+      <div class="entry-card" onclick="startPath('email')">
+        <div class="entry-icon">&#128140;</div>
+        <h3>Post-Meeting Email</h3>
+        <p>A member who couldn&rsquo;t attend receives the results email and gives directly from their phone.</p>
+        <span class="entry-badge badge-email">Email Path</span>
+      </div>
+    </div>
+    <div class="lobby-roles">
+      <div class="lobby-role-tag">&#128100; Member perspective</div>
+      <div class="lobby-role-tag">&#128203; Coordinator perspective</div>
+      <div class="lobby-role-tag">&#127968; Beneficiary perspective</div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:#2a4a6a;">All three perspectives shown throughout every step</div>
+    <div style="margin-top:20px; border-top:1px solid #1B3A5C; padding-top:16px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a href="member-guide.html" target="_blank" style="display:inline-block; background:#0d2035; border:1px solid #1B3A5C; border-radius:8px; padding:10px 18px; color:#88c4e8; text-decoration:none; font-size:11px; font-weight:600; transition:border-color .2s;" onmouseover="this.style.borderColor='#2E86AB'" onmouseout="this.style.borderColor='#1B3A5C'">
+        Member Guide &rarr;
+      </a>
+      <a href="recipient-guide.html" target="_blank" style="display:inline-block; background:#0d2035; border:1px solid #3A1B3A; border-radius:8px; padding:10px 18px; color:#d4a8e8; text-decoration:none; font-size:11px; font-weight:600; transition:border-color .2s;" onmouseover="this.style.borderColor='#9b59b6'" onmouseout="this.style.borderColor='#3A1B3A'">
+        Recipient Organization Guide &rarr;
+      </a>
+      <a href="coordinator-guide.html" target="_blank" style="display:inline-block; background:#0d2035; border:1px solid #1B3A1B; border-radius:8px; padding:10px 18px; color:#a8d468; text-decoration:none; font-size:11px; font-weight:600; transition:border-color .2s;" onmouseover="this.style.borderColor='#6ab04c'" onmouseout="this.style.borderColor='#1B3A1B'">
+        Coordinator Guide &rarr;
+      </a>
+      <a href="index.html" target="_blank" style="display:inline-block; background:#0d2035; border:1px solid #1B3A5C; border-radius:8px; padding:10px 18px; color:#4a7a9b; text-decoration:none; font-size:11px; font-weight:600; transition:border-color .2s;" onmouseover="this.style.borderColor='#2E86AB'" onmouseout="this.style.borderColor='#1B3A5C'">
+        All Documents &rarr;
+      </a>
+    </div>
+  </div>`;
+}
+
+function renderBrowserBefore() {
+  return `
+  <div style="position:relative;">
+    <div class="browser-frame">
+      <div class="browser-chrome">
+        <div class="browser-dot bd-r"></div>
+        <div class="browser-dot bd-y"></div>
+        <div class="browser-dot bd-g"></div>
+        <div class="browser-url">
+          <span class="url-lock">&#128274;</span>
+          www.100menwhocarewoodrivervalley.com
+        </div>
+      </div>
+      <div class="browser-body" id="site-body">${SITE_HTML}</div>
+    </div>
+    <div class="inject-overlay" onclick="doInject()" id="inject-btn">
+      <span class="inject-arrow">&#8592;</span>
+      Click to add the Contribute button
+    </div>
+  </div>`;
+}
+
+function renderBrowserAfter() {
+  return `
+  <div class="browser-frame">
+    <div class="browser-chrome">
+      <div class="browser-dot bd-r"></div>
+      <div class="browser-dot bd-y"></div>
+      <div class="browser-dot bd-g"></div>
+      <div class="browser-url">
+        <span class="url-lock">&#128274;</span>
+        www.100menwhocarewoodrivervalley.com
+      </div>
+    </div>
+    <div class="browser-body">${SITE_HTML.replace('id="site-nav-btn"', 'id="site-nav-btn" style="display:inline-block;"').replace('id="site-hero-btn"', 'id="site-hero-btn" style="display:inline-block;"')}</div>
+  </div>`;
+}
+
+function renderRoom() {
+  const dots = Array.from({length:48}, (_,i) =>
+    `<div class="audience-dot${i===14||i===22||i===33?' scanning':''}"></div>`
+  ).join('');
+  return `
+  <div class="room-scene">
+    <div class="room-stage">
+      <div class="stage-screen">
+        <div class="stage-screen-title">Contribute Now</div>
+        <div class="stage-qr">${QR_CELLS}</div>
+        <div class="stage-screen-url">100menwhocarewoodrivervalley.com/contribute</div>
+      </div>
+      <div class="stage-speaker">
+        <div class="speaker-head"></div>
+        <div class="speaker-body"></div>
+      </div>
+      <div style="font-size:10px;color:#4a7a9b;margin-top:6px;">The Hunger Coalition &mdash; presenting now</div>
+    </div>
+    <div class="room-audience">
+      <div class="audience-label">~100 members &mdash; green dots are scanning the QR code</div>
+      <div class="audience-grid">${dots}</div>
+    </div>
+    <div class="room-caption">QR code live during all three presentations &mdash; members give while the energy is high</div>
+  </div>`;
+}
+
+function renderPhoneScan() {
+  return `
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-status"><span>9:41</span><span>&#128267; Scanning&hellip;</span></div>
+    <div class="phone-scroll">
+      <div class="ph-header">100MWC &mdash; Contribute Page Loading</div>
+      <div style="padding:20px;text-align:center;">
+        <div style="font-size:30px;margin-bottom:12px;">&#128267;</div>
+        <div style="font-size:11px;color:#1B3A5C;font-weight:700;margin-bottom:6px;">QR Scanned Successfully</div>
+        <div style="font-size:9px;color:#888;margin-bottom:16px;">Opening contribute page&hellip;</div>
+        <div style="height:4px;background:#eee;border-radius:2px;overflow:hidden;">
+          <div style="height:4px;background:#2D8B4E;width:70%;border-radius:2px;animation:scan-load 1s ease forwards;"></div>
+        </div>
+        <style>@keyframes scan-load{from{width:0}to{width:100%}}</style>
+        <div style="font-size:8px;color:#888;margin-top:8px;">100menwhocarewoodrivervalley.com/contribute</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderEmailInbox() {
+  return `
+  <div class="email-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-status"><span>9:41</span><span>100%</span></div>
+    <div class="email-inbox">
+      <div class="email-header-bar"><span>Inbox</span><span>103 messages</span></div>
+      <div class="inbox-row" style="opacity:.5">
+        <div class="inbox-from">Marty Lyon</div>
+        <div class="inbox-subj">Q2 2026 Meeting Reminder &mdash; Tue April 15</div>
+        <div class="inbox-prev">A reminder about Tuesday&rsquo;s meeting at Town Center West&hellip;</div>
+        <div class="inbox-time">Apr 12</div>
+      </div>
+      <div class="inbox-row unread" onclick="goScene('email-open')">
+        <div class="inbox-dot"></div>
+        <div class="inbox-from">Marty Lyon &mdash; 100 Men Who Care</div>
+        <div class="inbox-subj unread">Q2 2026 Results &mdash; Three Great Causes Need You</div>
+        <div class="inbox-prev">Thank you to all who attended Tuesday&rsquo;s meeting. Three outstanding organizations presented&hellip;</div>
+        <div class="inbox-time">Apr 17</div>
+      </div>
+      <div class="inbox-row" style="opacity:.5">
+        <div class="inbox-from">Hunger Coalition Newsletter</div>
+        <div class="inbox-subj">April Update from the Hunger Coalition</div>
+        <div class="inbox-prev">This month we served 1,240 families across Blaine County&hellip;</div>
+        <div class="inbox-time">Apr 14</div>
+      </div>
+      <div class="inbox-row" style="opacity:.5">
+        <div class="inbox-from">Bank Alert</div>
+        <div class="inbox-subj">Account notification</div>
+        <div class="inbox-prev">A deposit of $2,840.00 has been made to your account&hellip;</div>
+        <div class="inbox-time">Apr 13</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderEmailOpen() {
+  return `
+  <div class="email-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-status"><span>9:41</span><span>100%</span></div>
+    <div class="email-open">
+      <div class="em-header">
+        <div class="em-subject">Q2 2026 Results &mdash; Three Great Causes Need You</div>
+        <div class="em-from">From: marty@100menwhocarewoodrivervalley.com &nbsp;&middot;&nbsp; Apr 17</div>
+      </div>
+      <div class="em-body">Thank you to everyone who attended Tuesday&rsquo;s meeting. Three outstanding organizations presented. Your minimum $100 can go to one, two, or all three.</div>
+      <div class="em-charity"><strong>The Hunger Coalition</strong><br>Stocking pantries and delivering meals across Blaine County since 1984.</div>
+      <div class="em-charity"><strong>Sun Valley Humane Society</strong><br>Shelter, adoption, and spay/neuter programs for animals in the WRV.</div>
+      <div class="em-charity"><strong>YMCA Youth Fund</strong><br>Scholarships ensuring every kid can participate regardless of income.</div>
+      <div class="em-contribute-btn" onclick="goScene('contribute')">Contribute Now &#8594;</div>
+      <div style="font-size:9px;color:#888;text-align:center;margin-bottom:4px;">or scan to open on any device:</div>
+      <div class="em-qr">QR</div>
+      <div style="font-size:8px;color:#aaa;text-align:center;">Didn&rsquo;t attend? You&rsquo;re still expected to contribute. See payment options on the Contribute page.</div>
+    </div>
+  </div>`;
+}
+
+function renderPhone(html) {
+  return `
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-status"><span>9:41</span><span>100%</span></div>
+    <div class="phone-scroll">${html}</div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   Render engine
+   ═══════════════════════════════════════════════════ */
+
+function renderDevice(scene) {
+  switch(scene.device) {
+    case 'lobby':           return renderLobby();
+    case 'browser-before':  return renderBrowserBefore();
+    case 'browser-after':   return renderBrowserAfter();
+    case 'room':            return renderRoom();
+    case 'phone-scan':      return renderPhoneScan();
+    case 'email-inbox':     return renderEmailInbox();
+    case 'email-open':      return renderEmailOpen();
+    case 'phone-contribute':return renderPhone(CONTRIBUTE_HTML);
+    case 'phone-payment':   return renderPhone(PAYMENT_HTML);
+    case 'phone-daf':       return renderPhone(DAF_HTML);
+    case 'phone-confirm':   return renderPhone(CONFIRM_HTML);
+    default:                return '<p style="color:#4a7a9b">Scene not found</p>';
+  }
+}
+
+function renderRoles(scene) {
+  ['member','coord','beneficiary'].forEach(role => {
+    const items = scene.roles[role] || [];
+    const html  = items.map(t => `<p>${t}</p>`).join('');
+    document.getElementById(`rc-${role}-body`).innerHTML = html;
+  });
+}
+
+function renderPathDots(path, idx) {
+  const p = paths[path];
+  document.getElementById('path-dots').innerHTML = p.map((id, i) => {
+    let cls = 'path-dot';
+    if (i < idx) cls += ' done';
+    if (i === idx) cls += ' active';
+    return `<div class="${cls}" onclick="goIdx(${i})" title="${scenes[id]?.title||id}"></div>`;
+  }).join('');
+}
+
+function renderScene(sceneId) {
+  const scene = scenes[sceneId];
+  if (!scene) return;
+
+  const dc = document.getElementById('device-content');
+  dc.innerHTML = renderDevice(scene);
+  dc.className = 'scene-fade';
+
+  document.getElementById('scene-title').textContent = scene.title;
+
+  const tagEl = document.getElementById('path-tag-el');
+  tagEl.textContent = scene.pathTag;
+  tagEl.className   = 'path-tag ' + (scene.pathClass||'');
+  if (!scene.pathTag) tagEl.style.display = 'none'; else tagEl.style.display = '';
+
+  const path   = paths[currentPath];
+  const pct    = currentIdx === 0 ? 0 : Math.round((currentIdx / (path.length - 1)) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('step-indicator').textContent =
+    currentIdx === 0 ? '' : `Step ${currentIdx} of ${path.length - 1}`;
+
+  renderRoles(scene);
+  renderPathDots(currentPath, currentIdx);
+
+  document.getElementById('ann-text').innerHTML = scene.annotation;
+  document.getElementById('back-btn').disabled = (currentIdx === 0);
+  document.getElementById('next-btn').disabled = (scene.next === null && currentIdx === path.length - 1);
+  document.getElementById('next-btn').textContent = (currentIdx === path.length - 1) ? 'Start Over' : 'Next \u2192';
+}
+
+/* ═══════════════════════════════════════════════════
+   Navigation
+   ═══════════════════════════════════════════════════ */
+
+function startPath(path) {
+  currentPath = path;
+  currentIdx  = 1;
+  renderScene(paths[currentPath][currentIdx]);
+}
+
+function navNext() {
+  const path = paths[currentPath];
+  if (currentIdx >= path.length - 1) { goScene('lobby'); currentIdx = 0; return; }
+  currentIdx++;
+  renderScene(path[currentIdx]);
+}
+
+function navBack() {
+  if (currentIdx <= 0) return;
+  currentIdx--;
+  renderScene(paths[currentPath][currentIdx]);
+}
+
+function goScene(id) {
+  const path = paths[currentPath];
+  const idx  = path.indexOf(id);
+  if (idx >= 0) { currentIdx = idx; renderScene(id); }
+}
+
+function goIdx(idx) {
+  currentIdx = idx;
+  renderScene(paths[currentPath][idx]);
+}
+
+function goContribute() { goScene('contribute'); }
+
+function doInject() {
+  // Animate the donate buttons appearing in the browser frame
+  const navBtn  = document.getElementById('site-nav-btn');
+  const heroBtn = document.getElementById('site-hero-btn');
+  if (navBtn)  { navBtn.style.display  = 'inline-block'; }
+  if (heroBtn) { heroBtn.style.display = 'inline-block'; }
+  const overlay = document.getElementById('inject-btn');
+  if (overlay) overlay.style.display = 'none';
+  // Update annotation
+  document.getElementById('ann-text').innerHTML =
+    '<strong>There it is.</strong> The Contribute button is now live in the nav and hero. One click and members are in the contribute flow. Ready to see it?';
+}
+
+/* ── Boot ── */
+renderScene('lobby');
+</script>
+</body>
+</html>
